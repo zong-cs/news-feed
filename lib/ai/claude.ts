@@ -1,0 +1,67 @@
+import OpenAI from 'openai'
+
+const client = new OpenAI({
+  apiKey: process.env.MOONSHOT_API_KEY,
+  baseURL: 'https://api.moonshot.cn/v1',
+})
+
+export interface AnalysisResult {
+  summary: string
+  sentiment: 'bullish' | 'bearish' | 'neutral'
+  instruments: Array<{
+    symbol: string
+    name: string
+    type: 'stock' | 'crypto' | 'commodity' | 'forex'
+    exchange?: string
+    relevance: number
+  }>
+  keyDataPoints: string[]
+}
+
+const SYSTEM_PROMPT = `You are a financial news analyst. Analyze the given article and extract:
+1. A concise summary (2-3 sentences)
+2. Overall market sentiment: bullish, bearish, or neutral
+3. Trading instruments mentioned (stocks, crypto, commodities, forex)
+4. Key data points (prices, percentages, figures)
+
+Respond ONLY with valid JSON matching this schema:
+{
+  "summary": "string",
+  "sentiment": "bullish|bearish|neutral",
+  "instruments": [
+    {
+      "symbol": "string (e.g. AAPL, BTC, GOLD, EUR/USD)",
+      "name": "string",
+      "type": "stock|crypto|commodity|forex",
+      "exchange": "string or null",
+      "relevance": 0.0-1.0
+    }
+  ],
+  "keyDataPoints": ["string"]
+}`
+
+export async function analyzeArticle(
+  title: string,
+  content: string
+): Promise<AnalysisResult | null> {
+  try {
+    const response = await client.chat.completions.create({
+      model: 'kimi-k2.5-thinking',
+      max_tokens: 1024,
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        {
+          role: 'user',
+          content: `Title: ${title}\n\nContent: ${content.slice(0, 4000)}`,
+        },
+      ],
+    })
+
+    const text = response.choices[0]?.message?.content ?? ''
+    const result = JSON.parse(text) as AnalysisResult
+    return result
+  } catch (err) {
+    console.error('[kimi] analyzeArticle error:', err)
+    return null
+  }
+}
