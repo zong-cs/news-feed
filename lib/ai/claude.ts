@@ -60,6 +60,7 @@ export async function analyzeArticle(
     const raw = response.choices[0]?.message?.content ?? ''
     // Strip markdown code blocks if present
     const text = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
+    console.log('[kimi] raw response:', raw.slice(0, 200))
     const result = JSON.parse(text) as AnalysisResult
     return result
   } catch (err) {
