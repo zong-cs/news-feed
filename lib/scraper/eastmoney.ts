@@ -20,14 +20,16 @@ export class EastMoneyScraper extends BaseScraper {
     try {
       const data = JSON.parse(match[1])
       const list: any[] = data?.LiveList ?? []
+      console.log('[eastmoney] fetched', list.length, 'items')
       return list.slice(0, 20).map((item) => ({
-        url: `https://finance.eastmoney.com/a/${item.id}.html`,
+        url: item.url_w ?? `https://finance.eastmoney.com/a/${item.id}.html`,
         title: item.title ?? '',
         content: item.digest ?? item.title ?? '',
         source: 'eastmoney',
         publishedAt: item.showtime ? new Date(item.showtime) : new Date(),
       }))
-    } catch {
+    } catch (err) {
+      console.error('[eastmoney] parse error:', err)
       return []
     }
   }
