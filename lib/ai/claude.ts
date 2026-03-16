@@ -57,7 +57,9 @@ export async function analyzeArticle(
       ],
     })
 
-    const text = response.choices[0]?.message?.content ?? ''
+    const raw = response.choices[0]?.message?.content ?? ''
+    // Strip markdown code blocks if present
+    const text = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
     const result = JSON.parse(text) as AnalysisResult
     return result
   } catch (err) {
