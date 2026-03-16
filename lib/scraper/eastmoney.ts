@@ -19,7 +19,7 @@ export class EastMoneyScraper extends BaseScraper {
 
     try {
       const data = JSON.parse(match[1])
-      const list: any[] = data?.LiveList ?? []
+      const list: any[] = data?.LivesList ?? []
       console.log('[eastmoney] fetched', list.length, 'items')
       return list.slice(0, 20).map((item) => ({
         url: item.url_w ?? `https://finance.eastmoney.com/a/${item.id}.html`,
