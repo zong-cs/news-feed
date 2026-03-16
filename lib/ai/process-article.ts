@@ -8,10 +8,13 @@ export async function processPendingArticles(batchSize = 10): Promise<number> {
     take: batchSize,
   })
 
+  console.log('[ai] pending articles:', articles.length)
+
   let processed = 0
 
   for (const article of articles) {
     const result = await analyzeArticle(article.title, article.content)
+    console.log('[ai] article', article.id, result ? 'ok' : 'failed')
 
     if (!result) {
       await prisma.newsArticle.update({
