@@ -46,7 +46,7 @@ export async function analyzeArticle(
 ): Promise<AnalysisResult | null> {
   try {
     const response = await client.chat.completions.create({
-      model: 'kimi-k2.5-thinking',
+      model: 'kimi-k2.5',
       max_tokens: 1024,
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
