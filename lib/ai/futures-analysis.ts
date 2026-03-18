@@ -1,0 +1,73 @@
+import OpenAI from 'openai'
+
+const client = new OpenAI({
+  apiKey: process.env.MOONSHOT_API_KEY,
+  baseURL: 'https://api.moonshot.cn/v1',
+})
+
+export interface FuturesAnalysis {
+  variety: string
+  contradiction: string
+  opportunity: string
+  bullCase: string
+  bearCase: string
+  sentiment: 'bullish' | 'bearish' | 'neutral'
+  updatedAt: Date
+}
+
+const SYSTEM_PROMPT = `你是一位专业的期货市场分析师。根据提供的多篇期货相关文章，对指定品种进行基本面分析。
+
+请输出以下 JSON 格式（不要包含 markdown 代码块）：
+{
+  "contradiction": "当前最核心的基本面矛盾（供需矛盾、政策矛盾等，2-3句话）",
+  "opportunity": "潜在交易机会描述（基于矛盾的交易逻辑，2-3句话）",
+  "bullCase": "做多依据（支撑价格上涨的核心逻辑，2-3句话）",
+  "bearCase": "做空依据（压制价格的核心逻辑，2-3句话）",
+  "sentiment": "bullish|bearish|neutral"
+}`
+
+export async function analyzeFuturesVariety(
+  variety: string,
+  articles: Array<{ title: string; content: string; source: string }>
+): Promise<FuturesAnalysis | null> {
+  if (articles.length === 0) return null
+
+  // Combine up to 10 articles, truncate total to 8000 chars
+  const combined = articles
+    .slice(0, 10)
+    .map((a, i) => `[${i + 1}] 来源:${a.source}\n标题:${a.title}\n内容:${a.content}`)
+    .join('\n\n---\n\n')
+    .slice(0, 8000)
+
+  try {
+    const response = await client.chat.completions.create({
+      model: 'kimi-k2.5',
+      max_tokens: 2048,
+      messages: [
+        { role: 'system', content: SYSTEM_PROMPT },
+        {
+          role: 'user',
+          content: `品种：${variety}\n\n相关文章：\n${combined}`,
+        },
+      ],
+    })
+
+    const raw = response.choices[0]?.message?.content ?? ''
+    const text = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
+    console.log('[futures-analysis] raw response for', variety, ':', text.slice(0, 200))
+
+    const parsed = JSON.parse(text)
+    return {
+      variety,
+      contradiction: parsed.contradiction ?? '',
+      opportunity: parsed.opportunity ?? '',
+      bullCase: parsed.bullCase ?? '',
+      bearCase: parsed.bearCase ?? '',
+      sentiment: parsed.sentiment ?? 'neutral',
+      updatedAt: new Date(),
+    }
+  } catch (err) {
+    console.error('[futures-analysis] error for', variety, ':', err)
+    return null
+  }
+}

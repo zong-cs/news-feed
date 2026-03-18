@@ -1,4 +1,5 @@
 import { ScrapePanel } from '@/components/admin/ScrapePanel'
+import { FuturesRefreshButton } from '@/components/admin/FuturesRefreshButton'
 
 export default function AdminPage() {
   return (
@@ -9,13 +10,26 @@ export default function AdminPage() {
             <h1 className="text-2xl font-bold text-gray-900">Admin</h1>
             <p className="text-sm text-gray-500 mt-1">手动触发新闻爬取</p>
           </div>
-          <a
-            href="/"
-            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 transition-colors"
-          >
-            ← 首页
-          </a>
+          <div className="flex items-center gap-3">
+            <a
+              href="/futures-analysis"
+              className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 transition-colors"
+            >
+              期货分析
+            </a>
+            <a
+              href="/"
+              className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 transition-colors"
+            >
+              ← 首页
+            </a>
+          </div>
         </div>
+
+        <div className="mb-6">
+          <FuturesRefreshButton />
+        </div>
+
         <ScrapePanel />
       </div>
     </main>

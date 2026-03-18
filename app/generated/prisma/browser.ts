@@ -37,3 +37,8 @@ export type ArticleInstrument = Prisma.ArticleInstrumentModel
  * 
  */
 export type ScrapeJob = Prisma.ScrapeJobModel
+/**
+ * Model FuturesVarietyAnalysis
+ * 
+ */
+export type FuturesVarietyAnalysis = Prisma.FuturesVarietyAnalysisModel

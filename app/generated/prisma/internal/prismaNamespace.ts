@@ -387,7 +387,8 @@ export const ModelName = {
   NewsArticle: 'NewsArticle',
   TradingInstrument: 'TradingInstrument',
   ArticleInstrument: 'ArticleInstrument',
-  ScrapeJob: 'ScrapeJob'
+  ScrapeJob: 'ScrapeJob',
+  FuturesVarietyAnalysis: 'FuturesVarietyAnalysis'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -403,7 +404,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "newsArticle" | "tradingInstrument" | "articleInstrument" | "scrapeJob"
+    modelProps: "newsArticle" | "tradingInstrument" | "articleInstrument" | "scrapeJob" | "futuresVarietyAnalysis"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -703,6 +704,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    FuturesVarietyAnalysis: {
+      payload: Prisma.$FuturesVarietyAnalysisPayload<ExtArgs>
+      fields: Prisma.FuturesVarietyAnalysisFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FuturesVarietyAnalysisFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FuturesVarietyAnalysisPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FuturesVarietyAnalysisFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FuturesVarietyAnalysisPayload>
+        }
+        findFirst: {
+          args: Prisma.FuturesVarietyAnalysisFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FuturesVarietyAnalysisPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FuturesVarietyAnalysisFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FuturesVarietyAnalysisPayload>
+        }
+        findMany: {
+          args: Prisma.FuturesVarietyAnalysisFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FuturesVarietyAnalysisPayload>[]
+        }
+        create: {
+          args: Prisma.FuturesVarietyAnalysisCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FuturesVarietyAnalysisPayload>
+        }
+        createMany: {
+          args: Prisma.FuturesVarietyAnalysisCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FuturesVarietyAnalysisCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FuturesVarietyAnalysisPayload>[]
+        }
+        delete: {
+          args: Prisma.FuturesVarietyAnalysisDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FuturesVarietyAnalysisPayload>
+        }
+        update: {
+          args: Prisma.FuturesVarietyAnalysisUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FuturesVarietyAnalysisPayload>
+        }
+        deleteMany: {
+          args: Prisma.FuturesVarietyAnalysisDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FuturesVarietyAnalysisUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FuturesVarietyAnalysisUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FuturesVarietyAnalysisPayload>[]
+        }
+        upsert: {
+          args: Prisma.FuturesVarietyAnalysisUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FuturesVarietyAnalysisPayload>
+        }
+        aggregate: {
+          args: Prisma.FuturesVarietyAnalysisAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFuturesVarietyAnalysis>
+        }
+        groupBy: {
+          args: Prisma.FuturesVarietyAnalysisGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FuturesVarietyAnalysisGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FuturesVarietyAnalysisCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FuturesVarietyAnalysisCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -788,6 +863,21 @@ export const ScrapeJobScalarFieldEnum = {
 } as const
 
 export type ScrapeJobScalarFieldEnum = (typeof ScrapeJobScalarFieldEnum)[keyof typeof ScrapeJobScalarFieldEnum]
+
+
+export const FuturesVarietyAnalysisScalarFieldEnum = {
+  id: 'id',
+  variety: 'variety',
+  contradiction: 'contradiction',
+  opportunity: 'opportunity',
+  bullCase: 'bullCase',
+  bearCase: 'bearCase',
+  sentiment: 'sentiment',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type FuturesVarietyAnalysisScalarFieldEnum = (typeof FuturesVarietyAnalysisScalarFieldEnum)[keyof typeof FuturesVarietyAnalysisScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -945,6 +1035,7 @@ export type GlobalOmitConfig = {
   tradingInstrument?: Prisma.TradingInstrumentOmit
   articleInstrument?: Prisma.ArticleInstrumentOmit
   scrapeJob?: Prisma.ScrapeJobOmit
+  futuresVarietyAnalysis?: Prisma.FuturesVarietyAnalysisOmit
 }
 
 /* Types for Logging */

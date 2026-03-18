@@ -54,3 +54,15 @@ model ScrapeJob {
   count   Int      @default(0)
   error   String?
 }
+
+model FuturesVarietyAnalysis {
+  id           Int      @id @default(autoincrement())
+  variety      String   @unique
+  contradiction String
+  opportunity  String
+  bullCase     String
+  bearCase     String
+  sentiment    String
+  updatedAt    DateTime @updatedAt
+  createdAt    DateTime @default(now())
+}

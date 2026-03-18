@@ -26,6 +26,8 @@ export async function runScrapeJob(source: string): Promise<{ count: number }> {
             rawHtml: process.env.STORE_RAW_HTML === 'true' ? article.rawHtml : null,
             source: article.source,
             publishedAt: article.publishedAt,
+            // zlqh already has AI summary — skip re-analysis
+            aiProcessed: article.source === 'zlqh',
           },
           update: {},
         })

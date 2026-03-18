@@ -8,6 +8,23 @@ export const ALL_SOURCES = [
   'coindesk',
   'cointelegraph',
   'twitter',
+  'sina',
+  'tonghuashun',
+  'xueqiu',
+  'wallstreetcn',
+  'theblock',
+  'decrypt',
+  'blockworks',
+  'cnbc',
+  'marketwatch',
+  'seekingalpha',
+  'citicsf',
+  'reddit',
+  'eafutures',
+  'ztqh',
+  'zlqh',
+  'thsfutures',
+  'emfutures',
 ] as const
 
 export type SourceName = (typeof ALL_SOURCES)[number]

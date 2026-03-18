@@ -54,7 +54,8 @@ export const ModelName = {
   NewsArticle: 'NewsArticle',
   TradingInstrument: 'TradingInstrument',
   ArticleInstrument: 'ArticleInstrument',
-  ScrapeJob: 'ScrapeJob'
+  ScrapeJob: 'ScrapeJob',
+  FuturesVarietyAnalysis: 'FuturesVarietyAnalysis'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -119,6 +120,21 @@ export const ScrapeJobScalarFieldEnum = {
 } as const
 
 export type ScrapeJobScalarFieldEnum = (typeof ScrapeJobScalarFieldEnum)[keyof typeof ScrapeJobScalarFieldEnum]
+
+
+export const FuturesVarietyAnalysisScalarFieldEnum = {
+  id: 'id',
+  variety: 'variety',
+  contradiction: 'contradiction',
+  opportunity: 'opportunity',
+  bullCase: 'bullCase',
+  bearCase: 'bearCase',
+  sentiment: 'sentiment',
+  updatedAt: 'updatedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type FuturesVarietyAnalysisScalarFieldEnum = (typeof FuturesVarietyAnalysisScalarFieldEnum)[keyof typeof FuturesVarietyAnalysisScalarFieldEnum]
 
 
 export const SortOrder = {
