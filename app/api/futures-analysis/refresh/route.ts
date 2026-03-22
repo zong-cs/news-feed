@@ -42,42 +42,37 @@ export async function POST() {
 
     console.log('[futures-analysis/refresh] total tasks:', tasks.length)
 
-    const BATCH = 5
     const results: string[] = []
 
-    for (let i = 0; i < tasks.length; i += BATCH) {
-      const batch = tasks.slice(i, i + BATCH)
-      await Promise.all(
-        batch.map(async ({ sector, variety, relevant }) => {
-          console.log('[futures-analysis/refresh] analyzing', variety, 'with', relevant.length, 'articles')
-          const analysis = await analyzeFuturesVariety(
-            variety,
-            relevant.map((a) => ({ title: a.title, content: a.content, source: a.source }))
-          )
-          if (!analysis) return
-          await prisma.futuresVarietyAnalysis.upsert({
-            where: { variety },
-            create: {
-              variety: analysis.variety,
-              sector,
-              contradiction: analysis.contradiction,
-              opportunity: analysis.opportunity,
-              bullCase: analysis.bullCase,
-              bearCase: analysis.bearCase,
-              sentiment: analysis.sentiment,
-            },
-            update: {
-              sector,
-              contradiction: analysis.contradiction,
-              opportunity: analysis.opportunity,
-              bullCase: analysis.bullCase,
-              bearCase: analysis.bearCase,
-              sentiment: analysis.sentiment,
-            },
-          })
-          results.push(variety)
-        })
+    // Process one at a time to avoid Kimi 429 overload
+    for (const { sector, variety, relevant } of tasks) {
+      console.log('[futures-analysis/refresh] analyzing', variety, 'with', relevant.length, 'articles')
+      const analysis = await analyzeFuturesVariety(
+        variety,
+        relevant.map((a) => ({ title: a.title, content: a.content, source: a.source }))
       )
+      if (!analysis) continue
+      await prisma.futuresVarietyAnalysis.upsert({
+        where: { variety },
+        create: {
+          variety: analysis.variety,
+          sector,
+          contradiction: analysis.contradiction,
+          opportunity: analysis.opportunity,
+          bullCase: analysis.bullCase,
+          bearCase: analysis.bearCase,
+          sentiment: analysis.sentiment,
+        },
+        update: {
+          sector,
+          contradiction: analysis.contradiction,
+          opportunity: analysis.opportunity,
+          bullCase: analysis.bullCase,
+          bearCase: analysis.bearCase,
+          sentiment: analysis.sentiment,
+        },
+      })
+      results.push(variety)
     }
 
     return NextResponse.json({ updated: results.length, varieties: results })

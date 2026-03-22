@@ -26,6 +26,7 @@ export async function processPendingArticles(batchSize = 10): Promise<number> {
 
     // Upsert instruments and link to article
     for (const inst of result.instruments) {
+      if (!inst.symbol) continue
       const instrument = await prisma.tradingInstrument.upsert({
         where: { symbol: inst.symbol },
         create: {

@@ -26,6 +26,8 @@ const SYSTEM_PROMPT = `你是一位专业的期货市场分析师。根据提供
   "sentiment": "bullish|bearish|neutral"
 }`
 
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
+
 export async function analyzeFuturesVariety(
   variety: string,
   articles: Array<{ title: string; content: string; source: string }>
@@ -39,39 +41,50 @@ export async function analyzeFuturesVariety(
     .join('\n\n---\n\n')
     .slice(0, 8000)
 
-  try {
-    const response = await client.chat.completions.create({
-      model: 'kimi-k2.5',
-      max_tokens: 2048,
-      messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
-        {
-          role: 'user',
-          content: `品种：${variety}\n\n相关文章：\n${combined}`,
-        },
-      ],
-    })
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const response = await client.chat.completions.create({
+        model: 'kimi-k2.5',
+        max_tokens: 2048,
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          {
+            role: 'user',
+            content: `品种：${variety}\n\n相关文章：\n${combined}`,
+          },
+        ],
+      })
 
-    const raw = response.choices[0]?.message?.content
-      || (response.choices[0]?.message as any)?.reasoning_content
-      || ''
-    // Extract first JSON object block
-    const match = raw.match(/\{[\s\S]*\}/)
-    const text = match ? match[0] : raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
-    console.log('[futures-analysis] raw response for', variety, ':', text.slice(0, 200))
+      const raw = response.choices[0]?.message?.content
+        || (response.choices[0]?.message as any)?.reasoning_content
+        || ''
+      // Extract first JSON object block
+      const match = raw.match(/\{[\s\S]*\}/)
+      const text = match ? match[0] : raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
+      console.log('[futures-analysis] raw response for', variety, ':', text.slice(0, 200))
 
-    const parsed = JSON.parse(text)
-    return {
-      variety,
-      contradiction: parsed.contradiction ?? '',
-      opportunity: parsed.opportunity ?? '',
-      bullCase: parsed.bullCase ?? '',
-      bearCase: parsed.bearCase ?? '',
-      sentiment: parsed.sentiment ?? 'neutral',
-      updatedAt: new Date(),
+      const parsed = JSON.parse(text)
+      return {
+        variety,
+        contradiction: parsed.contradiction ?? '',
+        opportunity: parsed.opportunity ?? '',
+        bullCase: parsed.bullCase ?? '',
+        bearCase: parsed.bearCase ?? '',
+        sentiment: parsed.sentiment ?? 'neutral',
+        updatedAt: new Date(),
+      }
+    } catch (err: any) {
+      const status = err?.status ?? err?.response?.status
+      if (status === 429 && attempt < 2) {
+        const wait = (attempt + 1) * 10000
+        console.warn(`[futures-analysis] 429 for ${variety}, retrying in ${wait}ms (attempt ${attempt + 1})`)
+        await sleep(wait)
+        continue
+      }
+      console.error('[futures-analysis] error for', variety, ':', err)
+      return null
     }
-  } catch (err) {
-    console.error('[futures-analysis] error for', variety, ':', err)
-    return null
   }
+
+  return null
 }
