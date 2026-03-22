@@ -12,6 +12,7 @@ interface Analysis {
   bullCase: string
   bearCase: string
   sentiment: string
+  sources: string
   updatedAt: string
 }
 

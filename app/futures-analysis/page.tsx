@@ -54,7 +54,7 @@ export default async function FuturesAnalysisPage() {
               <SectorSection
                 key={sector}
                 sector={sector}
-                analyses={bySector[sector].map((a) => ({ ...a, updatedAt: a.updatedAt.toISOString() }))}
+                analyses={bySector[sector].map((a) => ({ ...a, updatedAt: a.updatedAt.toISOString(), sources: a.sources ?? '[]' }))}
               />
             ))}
           </div>

@@ -37,11 +37,13 @@ export type FuturesVarietyAnalysisSumAggregateOutputType = {
 export type FuturesVarietyAnalysisMinAggregateOutputType = {
   id: number | null
   variety: string | null
+  sector: string | null
   contradiction: string | null
   opportunity: string | null
   bullCase: string | null
   bearCase: string | null
   sentiment: string | null
+  sources: string | null
   updatedAt: Date | null
   createdAt: Date | null
 }
@@ -49,11 +51,13 @@ export type FuturesVarietyAnalysisMinAggregateOutputType = {
 export type FuturesVarietyAnalysisMaxAggregateOutputType = {
   id: number | null
   variety: string | null
+  sector: string | null
   contradiction: string | null
   opportunity: string | null
   bullCase: string | null
   bearCase: string | null
   sentiment: string | null
+  sources: string | null
   updatedAt: Date | null
   createdAt: Date | null
 }
@@ -61,11 +65,13 @@ export type FuturesVarietyAnalysisMaxAggregateOutputType = {
 export type FuturesVarietyAnalysisCountAggregateOutputType = {
   id: number
   variety: number
+  sector: number
   contradiction: number
   opportunity: number
   bullCase: number
   bearCase: number
   sentiment: number
+  sources: number
   updatedAt: number
   createdAt: number
   _all: number
@@ -83,11 +89,13 @@ export type FuturesVarietyAnalysisSumAggregateInputType = {
 export type FuturesVarietyAnalysisMinAggregateInputType = {
   id?: true
   variety?: true
+  sector?: true
   contradiction?: true
   opportunity?: true
   bullCase?: true
   bearCase?: true
   sentiment?: true
+  sources?: true
   updatedAt?: true
   createdAt?: true
 }
@@ -95,11 +103,13 @@ export type FuturesVarietyAnalysisMinAggregateInputType = {
 export type FuturesVarietyAnalysisMaxAggregateInputType = {
   id?: true
   variety?: true
+  sector?: true
   contradiction?: true
   opportunity?: true
   bullCase?: true
   bearCase?: true
   sentiment?: true
+  sources?: true
   updatedAt?: true
   createdAt?: true
 }
@@ -107,11 +117,13 @@ export type FuturesVarietyAnalysisMaxAggregateInputType = {
 export type FuturesVarietyAnalysisCountAggregateInputType = {
   id?: true
   variety?: true
+  sector?: true
   contradiction?: true
   opportunity?: true
   bullCase?: true
   bearCase?: true
   sentiment?: true
+  sources?: true
   updatedAt?: true
   createdAt?: true
   _all?: true
@@ -206,11 +218,13 @@ export type FuturesVarietyAnalysisGroupByArgs<ExtArgs extends runtime.Types.Exte
 export type FuturesVarietyAnalysisGroupByOutputType = {
   id: number
   variety: string
+  sector: string
   contradiction: string
   opportunity: string
   bullCase: string
   bearCase: string
   sentiment: string
+  sources: string
   updatedAt: Date
   createdAt: Date
   _count: FuturesVarietyAnalysisCountAggregateOutputType | null
@@ -241,11 +255,13 @@ export type FuturesVarietyAnalysisWhereInput = {
   NOT?: Prisma.FuturesVarietyAnalysisWhereInput | Prisma.FuturesVarietyAnalysisWhereInput[]
   id?: Prisma.IntFilter<"FuturesVarietyAnalysis"> | number
   variety?: Prisma.StringFilter<"FuturesVarietyAnalysis"> | string
+  sector?: Prisma.StringFilter<"FuturesVarietyAnalysis"> | string
   contradiction?: Prisma.StringFilter<"FuturesVarietyAnalysis"> | string
   opportunity?: Prisma.StringFilter<"FuturesVarietyAnalysis"> | string
   bullCase?: Prisma.StringFilter<"FuturesVarietyAnalysis"> | string
   bearCase?: Prisma.StringFilter<"FuturesVarietyAnalysis"> | string
   sentiment?: Prisma.StringFilter<"FuturesVarietyAnalysis"> | string
+  sources?: Prisma.StringFilter<"FuturesVarietyAnalysis"> | string
   updatedAt?: Prisma.DateTimeFilter<"FuturesVarietyAnalysis"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"FuturesVarietyAnalysis"> | Date | string
 }
@@ -253,11 +269,13 @@ export type FuturesVarietyAnalysisWhereInput = {
 export type FuturesVarietyAnalysisOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   variety?: Prisma.SortOrder
+  sector?: Prisma.SortOrder
   contradiction?: Prisma.SortOrder
   opportunity?: Prisma.SortOrder
   bullCase?: Prisma.SortOrder
   bearCase?: Prisma.SortOrder
   sentiment?: Prisma.SortOrder
+  sources?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -268,11 +286,13 @@ export type FuturesVarietyAnalysisWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.FuturesVarietyAnalysisWhereInput | Prisma.FuturesVarietyAnalysisWhereInput[]
   OR?: Prisma.FuturesVarietyAnalysisWhereInput[]
   NOT?: Prisma.FuturesVarietyAnalysisWhereInput | Prisma.FuturesVarietyAnalysisWhereInput[]
+  sector?: Prisma.StringFilter<"FuturesVarietyAnalysis"> | string
   contradiction?: Prisma.StringFilter<"FuturesVarietyAnalysis"> | string
   opportunity?: Prisma.StringFilter<"FuturesVarietyAnalysis"> | string
   bullCase?: Prisma.StringFilter<"FuturesVarietyAnalysis"> | string
   bearCase?: Prisma.StringFilter<"FuturesVarietyAnalysis"> | string
   sentiment?: Prisma.StringFilter<"FuturesVarietyAnalysis"> | string
+  sources?: Prisma.StringFilter<"FuturesVarietyAnalysis"> | string
   updatedAt?: Prisma.DateTimeFilter<"FuturesVarietyAnalysis"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"FuturesVarietyAnalysis"> | Date | string
 }, "id" | "variety">
@@ -280,11 +300,13 @@ export type FuturesVarietyAnalysisWhereUniqueInput = Prisma.AtLeast<{
 export type FuturesVarietyAnalysisOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   variety?: Prisma.SortOrder
+  sector?: Prisma.SortOrder
   contradiction?: Prisma.SortOrder
   opportunity?: Prisma.SortOrder
   bullCase?: Prisma.SortOrder
   bearCase?: Prisma.SortOrder
   sentiment?: Prisma.SortOrder
+  sources?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.FuturesVarietyAnalysisCountOrderByAggregateInput
@@ -300,22 +322,26 @@ export type FuturesVarietyAnalysisScalarWhereWithAggregatesInput = {
   NOT?: Prisma.FuturesVarietyAnalysisScalarWhereWithAggregatesInput | Prisma.FuturesVarietyAnalysisScalarWhereWithAggregatesInput[]
   id?: Prisma.IntWithAggregatesFilter<"FuturesVarietyAnalysis"> | number
   variety?: Prisma.StringWithAggregatesFilter<"FuturesVarietyAnalysis"> | string
+  sector?: Prisma.StringWithAggregatesFilter<"FuturesVarietyAnalysis"> | string
   contradiction?: Prisma.StringWithAggregatesFilter<"FuturesVarietyAnalysis"> | string
   opportunity?: Prisma.StringWithAggregatesFilter<"FuturesVarietyAnalysis"> | string
   bullCase?: Prisma.StringWithAggregatesFilter<"FuturesVarietyAnalysis"> | string
   bearCase?: Prisma.StringWithAggregatesFilter<"FuturesVarietyAnalysis"> | string
   sentiment?: Prisma.StringWithAggregatesFilter<"FuturesVarietyAnalysis"> | string
+  sources?: Prisma.StringWithAggregatesFilter<"FuturesVarietyAnalysis"> | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"FuturesVarietyAnalysis"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"FuturesVarietyAnalysis"> | Date | string
 }
 
 export type FuturesVarietyAnalysisCreateInput = {
   variety: string
+  sector?: string
   contradiction: string
   opportunity: string
   bullCase: string
   bearCase: string
   sentiment: string
+  sources?: string
   updatedAt?: Date | string
   createdAt?: Date | string
 }
@@ -323,22 +349,26 @@ export type FuturesVarietyAnalysisCreateInput = {
 export type FuturesVarietyAnalysisUncheckedCreateInput = {
   id?: number
   variety: string
+  sector?: string
   contradiction: string
   opportunity: string
   bullCase: string
   bearCase: string
   sentiment: string
+  sources?: string
   updatedAt?: Date | string
   createdAt?: Date | string
 }
 
 export type FuturesVarietyAnalysisUpdateInput = {
   variety?: Prisma.StringFieldUpdateOperationsInput | string
+  sector?: Prisma.StringFieldUpdateOperationsInput | string
   contradiction?: Prisma.StringFieldUpdateOperationsInput | string
   opportunity?: Prisma.StringFieldUpdateOperationsInput | string
   bullCase?: Prisma.StringFieldUpdateOperationsInput | string
   bearCase?: Prisma.StringFieldUpdateOperationsInput | string
   sentiment?: Prisma.StringFieldUpdateOperationsInput | string
+  sources?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -346,11 +376,13 @@ export type FuturesVarietyAnalysisUpdateInput = {
 export type FuturesVarietyAnalysisUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   variety?: Prisma.StringFieldUpdateOperationsInput | string
+  sector?: Prisma.StringFieldUpdateOperationsInput | string
   contradiction?: Prisma.StringFieldUpdateOperationsInput | string
   opportunity?: Prisma.StringFieldUpdateOperationsInput | string
   bullCase?: Prisma.StringFieldUpdateOperationsInput | string
   bearCase?: Prisma.StringFieldUpdateOperationsInput | string
   sentiment?: Prisma.StringFieldUpdateOperationsInput | string
+  sources?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -358,22 +390,26 @@ export type FuturesVarietyAnalysisUncheckedUpdateInput = {
 export type FuturesVarietyAnalysisCreateManyInput = {
   id?: number
   variety: string
+  sector?: string
   contradiction: string
   opportunity: string
   bullCase: string
   bearCase: string
   sentiment: string
+  sources?: string
   updatedAt?: Date | string
   createdAt?: Date | string
 }
 
 export type FuturesVarietyAnalysisUpdateManyMutationInput = {
   variety?: Prisma.StringFieldUpdateOperationsInput | string
+  sector?: Prisma.StringFieldUpdateOperationsInput | string
   contradiction?: Prisma.StringFieldUpdateOperationsInput | string
   opportunity?: Prisma.StringFieldUpdateOperationsInput | string
   bullCase?: Prisma.StringFieldUpdateOperationsInput | string
   bearCase?: Prisma.StringFieldUpdateOperationsInput | string
   sentiment?: Prisma.StringFieldUpdateOperationsInput | string
+  sources?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -381,11 +417,13 @@ export type FuturesVarietyAnalysisUpdateManyMutationInput = {
 export type FuturesVarietyAnalysisUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   variety?: Prisma.StringFieldUpdateOperationsInput | string
+  sector?: Prisma.StringFieldUpdateOperationsInput | string
   contradiction?: Prisma.StringFieldUpdateOperationsInput | string
   opportunity?: Prisma.StringFieldUpdateOperationsInput | string
   bullCase?: Prisma.StringFieldUpdateOperationsInput | string
   bearCase?: Prisma.StringFieldUpdateOperationsInput | string
   sentiment?: Prisma.StringFieldUpdateOperationsInput | string
+  sources?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -393,11 +431,13 @@ export type FuturesVarietyAnalysisUncheckedUpdateManyInput = {
 export type FuturesVarietyAnalysisCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   variety?: Prisma.SortOrder
+  sector?: Prisma.SortOrder
   contradiction?: Prisma.SortOrder
   opportunity?: Prisma.SortOrder
   bullCase?: Prisma.SortOrder
   bearCase?: Prisma.SortOrder
   sentiment?: Prisma.SortOrder
+  sources?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -409,11 +449,13 @@ export type FuturesVarietyAnalysisAvgOrderByAggregateInput = {
 export type FuturesVarietyAnalysisMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   variety?: Prisma.SortOrder
+  sector?: Prisma.SortOrder
   contradiction?: Prisma.SortOrder
   opportunity?: Prisma.SortOrder
   bullCase?: Prisma.SortOrder
   bearCase?: Prisma.SortOrder
   sentiment?: Prisma.SortOrder
+  sources?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -421,11 +463,13 @@ export type FuturesVarietyAnalysisMaxOrderByAggregateInput = {
 export type FuturesVarietyAnalysisMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   variety?: Prisma.SortOrder
+  sector?: Prisma.SortOrder
   contradiction?: Prisma.SortOrder
   opportunity?: Prisma.SortOrder
   bullCase?: Prisma.SortOrder
   bearCase?: Prisma.SortOrder
   sentiment?: Prisma.SortOrder
+  sources?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -439,11 +483,13 @@ export type FuturesVarietyAnalysisSumOrderByAggregateInput = {
 export type FuturesVarietyAnalysisSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   variety?: boolean
+  sector?: boolean
   contradiction?: boolean
   opportunity?: boolean
   bullCase?: boolean
   bearCase?: boolean
   sentiment?: boolean
+  sources?: boolean
   updatedAt?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["futuresVarietyAnalysis"]>
@@ -451,11 +497,13 @@ export type FuturesVarietyAnalysisSelect<ExtArgs extends runtime.Types.Extension
 export type FuturesVarietyAnalysisSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   variety?: boolean
+  sector?: boolean
   contradiction?: boolean
   opportunity?: boolean
   bullCase?: boolean
   bearCase?: boolean
   sentiment?: boolean
+  sources?: boolean
   updatedAt?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["futuresVarietyAnalysis"]>
@@ -463,11 +511,13 @@ export type FuturesVarietyAnalysisSelectCreateManyAndReturn<ExtArgs extends runt
 export type FuturesVarietyAnalysisSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   variety?: boolean
+  sector?: boolean
   contradiction?: boolean
   opportunity?: boolean
   bullCase?: boolean
   bearCase?: boolean
   sentiment?: boolean
+  sources?: boolean
   updatedAt?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["futuresVarietyAnalysis"]>
@@ -475,16 +525,18 @@ export type FuturesVarietyAnalysisSelectUpdateManyAndReturn<ExtArgs extends runt
 export type FuturesVarietyAnalysisSelectScalar = {
   id?: boolean
   variety?: boolean
+  sector?: boolean
   contradiction?: boolean
   opportunity?: boolean
   bullCase?: boolean
   bearCase?: boolean
   sentiment?: boolean
+  sources?: boolean
   updatedAt?: boolean
   createdAt?: boolean
 }
 
-export type FuturesVarietyAnalysisOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "variety" | "contradiction" | "opportunity" | "bullCase" | "bearCase" | "sentiment" | "updatedAt" | "createdAt", ExtArgs["result"]["futuresVarietyAnalysis"]>
+export type FuturesVarietyAnalysisOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "variety" | "sector" | "contradiction" | "opportunity" | "bullCase" | "bearCase" | "sentiment" | "sources" | "updatedAt" | "createdAt", ExtArgs["result"]["futuresVarietyAnalysis"]>
 
 export type $FuturesVarietyAnalysisPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "FuturesVarietyAnalysis"
@@ -492,11 +544,13 @@ export type $FuturesVarietyAnalysisPayload<ExtArgs extends runtime.Types.Extensi
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
     variety: string
+    sector: string
     contradiction: string
     opportunity: string
     bullCase: string
     bearCase: string
     sentiment: string
+    sources: string
     updatedAt: Date
     createdAt: Date
   }, ExtArgs["result"]["futuresVarietyAnalysis"]>
@@ -924,11 +978,13 @@ export interface Prisma__FuturesVarietyAnalysisClient<T, Null = never, ExtArgs e
 export interface FuturesVarietyAnalysisFieldRefs {
   readonly id: Prisma.FieldRef<"FuturesVarietyAnalysis", 'Int'>
   readonly variety: Prisma.FieldRef<"FuturesVarietyAnalysis", 'String'>
+  readonly sector: Prisma.FieldRef<"FuturesVarietyAnalysis", 'String'>
   readonly contradiction: Prisma.FieldRef<"FuturesVarietyAnalysis", 'String'>
   readonly opportunity: Prisma.FieldRef<"FuturesVarietyAnalysis", 'String'>
   readonly bullCase: Prisma.FieldRef<"FuturesVarietyAnalysis", 'String'>
   readonly bearCase: Prisma.FieldRef<"FuturesVarietyAnalysis", 'String'>
   readonly sentiment: Prisma.FieldRef<"FuturesVarietyAnalysis", 'String'>
+  readonly sources: Prisma.FieldRef<"FuturesVarietyAnalysis", 'String'>
   readonly updatedAt: Prisma.FieldRef<"FuturesVarietyAnalysis", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"FuturesVarietyAnalysis", 'DateTime'>
 }

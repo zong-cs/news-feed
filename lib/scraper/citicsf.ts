@@ -11,7 +11,7 @@ export class CiticsFScraper extends BaseScraper {
       'https://icsp-server.citicsf.com/icsp-data-provider/api/t0/reportsQuery'
     const body = {
       pageNum: 1,
-      pageSize: 20,
+      pageSize: 100,
       beginDate: null,
       endDate: null,
       title: '',
@@ -40,7 +40,7 @@ export class CiticsFScraper extends BaseScraper {
       const data = await response.json()
       const list: any[] = data?.list ?? []
       console.log('[citicsf] fetched', list.length, 'items')
-      return list.slice(0, 20).map((item) => {
+      return list.slice(0, 100).map((item) => {
         const dateStr: string = item.rptDate ?? ''
         // Format: "20260318000000"
         const publishedAt =

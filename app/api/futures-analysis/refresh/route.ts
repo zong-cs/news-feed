@@ -4,7 +4,10 @@ import { analyzeFuturesVariety } from '@/lib/ai/futures-analysis'
 
 export const maxDuration = 300
 
-const FUTURES_SOURCES = ['eafutures', 'ztqh', 'zlqh', 'thsfutures', 'emfutures', 'citicsf']
+const FUTURES_SOURCES = [
+  'eafutures', 'ztqh', 'zlqh', 'thsfutures', 'emfutures', 'citicsf',
+  'eastmoney', 'cls', 'sina', 'wallstreetcn', 'stcn', 'tonghuashun', 'xueqiu',
+]
 
 const SECTOR_VARIETIES: Record<string, string[]> = {
   '黑色金属': ['螺纹钢', '铁矿石', '焦炭', '焦煤', '硅铁', '锰硅'],
@@ -49,9 +52,10 @@ export async function POST() {
       console.log('[futures-analysis/refresh] analyzing', variety, 'with', relevant.length, 'articles')
       const analysis = await analyzeFuturesVariety(
         variety,
-        relevant.map((a) => ({ title: a.title, content: a.content, source: a.source }))
+        relevant.map((a) => ({ title: a.title, content: a.content, source: a.source, url: a.url }))
       )
       if (!analysis) continue
+      const sourcesJson = JSON.stringify(analysis.sources)
       await prisma.futuresVarietyAnalysis.upsert({
         where: { variety },
         create: {
@@ -62,6 +66,7 @@ export async function POST() {
           bullCase: analysis.bullCase,
           bearCase: analysis.bearCase,
           sentiment: analysis.sentiment,
+          sources: sourcesJson,
         },
         update: {
           sector,
@@ -70,6 +75,7 @@ export async function POST() {
           bullCase: analysis.bullCase,
           bearCase: analysis.bearCase,
           sentiment: analysis.sentiment,
+          sources: sourcesJson,
         },
       })
       results.push(variety)

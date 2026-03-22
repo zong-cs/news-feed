@@ -64,6 +64,7 @@ model FuturesVarietyAnalysis {
   bullCase     String
   bearCase     String
   sentiment    String
+  sources      String   @default("[]")
   updatedAt    DateTime @updatedAt
   createdAt    DateTime @default(now())
 }

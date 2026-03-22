@@ -5,6 +5,12 @@ const client = new OpenAI({
   baseURL: 'https://api.moonshot.cn/v1',
 })
 
+export interface ArticleRef {
+  title: string
+  source: string
+  url: string
+}
+
 export interface FuturesAnalysis {
   variety: string
   contradiction: string
@@ -12,6 +18,7 @@ export interface FuturesAnalysis {
   bullCase: string
   bearCase: string
   sentiment: 'bullish' | 'bearish' | 'neutral'
+  sources: ArticleRef[]
   updatedAt: Date
 }
 
@@ -30,7 +37,7 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 export async function analyzeFuturesVariety(
   variety: string,
-  articles: Array<{ title: string; content: string; source: string }>
+  articles: Array<{ title: string; content: string; source: string; url: string }>
 ): Promise<FuturesAnalysis | null> {
   if (articles.length === 0) return null
 
@@ -64,6 +71,7 @@ export async function analyzeFuturesVariety(
       console.log('[futures-analysis] raw response for', variety, ':', text.slice(0, 200))
 
       const parsed = JSON.parse(text)
+      const usedArticles = articles.slice(0, 10)
       return {
         variety,
         contradiction: parsed.contradiction ?? '',
@@ -71,6 +79,7 @@ export async function analyzeFuturesVariety(
         bullCase: parsed.bullCase ?? '',
         bearCase: parsed.bearCase ?? '',
         sentiment: parsed.sentiment ?? 'neutral',
+        sources: usedArticles.map((a) => ({ title: a.title, source: a.source, url: a.url })),
         updatedAt: new Date(),
       }
     } catch (err: any) {

@@ -868,11 +868,13 @@ export type ScrapeJobScalarFieldEnum = (typeof ScrapeJobScalarFieldEnum)[keyof t
 export const FuturesVarietyAnalysisScalarFieldEnum = {
   id: 'id',
   variety: 'variety',
+  sector: 'sector',
   contradiction: 'contradiction',
   opportunity: 'opportunity',
   bullCase: 'bullCase',
   bearCase: 'bearCase',
   sentiment: 'sentiment',
+  sources: 'sources',
   updatedAt: 'updatedAt',
   createdAt: 'createdAt'
 } as const
