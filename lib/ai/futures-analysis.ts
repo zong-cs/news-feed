@@ -52,8 +52,12 @@ export async function analyzeFuturesVariety(
       ],
     })
 
-    const raw = response.choices[0]?.message?.content ?? ''
-    const text = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
+    const raw = response.choices[0]?.message?.content
+      || (response.choices[0]?.message as any)?.reasoning_content
+      || ''
+    // Extract first JSON object block
+    const match = raw.match(/\{[\s\S]*\}/)
+    const text = match ? match[0] : raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
     console.log('[futures-analysis] raw response for', variety, ':', text.slice(0, 200))
 
     const parsed = JSON.parse(text)
