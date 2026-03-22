@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { analyzeFuturesVariety } from '@/lib/ai/futures-analysis'
+import { runScrapeJob } from '@/lib/news/scrape-job'
 
 export const maxDuration = 300
 
@@ -21,6 +22,9 @@ const SECTOR_VARIETIES: Record<string, string[]> = {
 
 export async function POST() {
   try {
+    // Scrape all futures sources first
+    await Promise.allSettled(FUTURES_SOURCES.map((s) => runScrapeJob(s)))
+
     const articles = await prisma.newsArticle.findMany({
       where: {
         source: { in: FUTURES_SOURCES },
