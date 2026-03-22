@@ -58,6 +58,7 @@ model ScrapeJob {
 model FuturesVarietyAnalysis {
   id           Int      @id @default(autoincrement())
   variety      String   @unique
+  sector       String   @default("其他")
   contradiction String
   opportunity  String
   bullCase     String

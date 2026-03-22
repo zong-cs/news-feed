@@ -3,14 +3,21 @@ import { VarietyAnalysisCard } from '@/components/futures/VarietyAnalysisCard'
 
 export const dynamic = 'force-dynamic'
 
+const SECTOR_ORDER = ['黑色金属', '有色金属', '化工', '农产品', '贵金属', '能源', '金融', '其他']
+
 export default async function FuturesAnalysisPage() {
   const analyses = await prisma.futuresVarietyAnalysis.findMany({
     orderBy: { updatedAt: 'desc' },
   })
 
-  const bullish = analyses.filter((a) => a.sentiment === 'bullish')
-  const bearish = analyses.filter((a) => a.sentiment === 'bearish')
-  const neutral = analyses.filter((a) => a.sentiment === 'neutral')
+  const bySector: Record<string, typeof analyses> = {}
+  for (const a of analyses) {
+    const sector = a.sector || '其他'
+    if (!bySector[sector]) bySector[sector] = []
+    bySector[sector].push(a)
+  }
+
+  const sectors = SECTOR_ORDER.filter((s) => bySector[s]?.length > 0)
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -42,48 +49,20 @@ export default async function FuturesAnalysisPage() {
             <p className="text-sm">请先在 Admin 页面抓取期货新闻，然后点击「刷新期货分析」</p>
           </div>
         ) : (
-          <div className="space-y-8">
-            {bullish.length > 0 && (
-              <section>
-                <h2 className="text-base font-semibold text-green-700 mb-4 flex items-center gap-2">
-                  <span className="inline-block w-2 h-2 rounded-full bg-green-500"></span>
-                  看多品种 ({bullish.length})
+          <div className="space-y-10">
+            {sectors.map((sector) => (
+              <section key={sector}>
+                <h2 className="text-base font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
+                  {sector}
+                  <span className="ml-2 text-sm font-normal text-gray-400">({bySector[sector].length})</span>
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                  {bullish.map((a) => (
+                  {bySector[sector].map((a) => (
                     <VarietyAnalysisCard key={a.id} analysis={{ ...a, updatedAt: a.updatedAt.toISOString() }} />
                   ))}
                 </div>
               </section>
-            )}
-
-            {bearish.length > 0 && (
-              <section>
-                <h2 className="text-base font-semibold text-red-700 mb-4 flex items-center gap-2">
-                  <span className="inline-block w-2 h-2 rounded-full bg-red-500"></span>
-                  看空品种 ({bearish.length})
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                  {bearish.map((a) => (
-                    <VarietyAnalysisCard key={a.id} analysis={{ ...a, updatedAt: a.updatedAt.toISOString() }} />
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {neutral.length > 0 && (
-              <section>
-                <h2 className="text-base font-semibold text-gray-600 mb-4 flex items-center gap-2">
-                  <span className="inline-block w-2 h-2 rounded-full bg-gray-400"></span>
-                  中性品种 ({neutral.length})
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                  {neutral.map((a) => (
-                    <VarietyAnalysisCard key={a.id} analysis={{ ...a, updatedAt: a.updatedAt.toISOString() }} />
-                  ))}
-                </div>
-              </section>
-            )}
+            ))}
           </div>
         )}
       </div>
