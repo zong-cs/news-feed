@@ -75,6 +75,7 @@ export abstract class BaseScraper {
     await rateLimit(domain)
     return fetch(url, {
       headers: { 'User-Agent': randomUA() },
+      signal: AbortSignal.timeout(15000),
     })
   }
 }

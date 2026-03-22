@@ -37,8 +37,10 @@ export async function runScrapeJob(source: string): Promise<{ count: number }> {
       }
     }
 
-    // Run AI processing on new articles
-    await processPendingArticles(20)
+    // Run AI processing on new articles (fire-and-forget, don't block response)
+    processPendingArticles(20).catch((err) =>
+      console.error('[scrape-job] AI processing error:', err)
+    )
 
     await prisma.scrapeJob.update({
       where: { source },
