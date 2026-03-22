@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/db'
-import { VarietyAnalysisCard } from '@/components/futures/VarietyAnalysisCard'
+import { SectorSection } from '@/components/futures/SectorSection'
 
 export const dynamic = 'force-dynamic'
 
@@ -51,17 +51,11 @@ export default async function FuturesAnalysisPage() {
         ) : (
           <div className="space-y-10">
             {sectors.map((sector) => (
-              <section key={sector}>
-                <h2 className="text-base font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">
-                  {sector}
-                  <span className="ml-2 text-sm font-normal text-gray-400">({bySector[sector].length})</span>
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                  {bySector[sector].map((a) => (
-                    <VarietyAnalysisCard key={a.id} analysis={{ ...a, updatedAt: a.updatedAt.toISOString() }} />
-                  ))}
-                </div>
-              </section>
+              <SectorSection
+                key={sector}
+                sector={sector}
+                analyses={bySector[sector].map((a) => ({ ...a, updatedAt: a.updatedAt.toISOString() }))}
+              />
             ))}
           </div>
         )}
