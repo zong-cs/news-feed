@@ -51,7 +51,7 @@ export async function analyzeFuturesVariety(
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
       const response = await client.chat.completions.create({
-        model: 'kimi-k2.5',
+        model: 'moonshot-v1-8k',
         max_tokens: 2048,
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },
@@ -62,9 +62,7 @@ export async function analyzeFuturesVariety(
         ],
       })
 
-      const raw = response.choices[0]?.message?.content
-        || (response.choices[0]?.message as any)?.reasoning_content
-        || ''
+      const raw = response.choices[0]?.message?.content ?? ''
       // Extract first JSON object block
       const match = raw.match(/\{[\s\S]*\}/)
       const text = match ? match[0] : raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
