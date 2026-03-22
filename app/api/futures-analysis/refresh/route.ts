@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { analyzeFuturesVariety } from '@/lib/ai/futures-analysis'
 
+export const maxDuration = 300
+
 const FUTURES_SOURCES = ['eafutures', 'ztqh', 'zlqh', 'thsfutures', 'emfutures', 'citicsf']
 
 const SECTOR_VARIETIES: Record<string, string[]> = {
@@ -27,48 +29,55 @@ export async function POST() {
 
     console.log('[futures-analysis/refresh] found', articles.length, 'articles')
 
-    const results: string[] = []
+    const tasks: Array<{ sector: string; variety: string; relevant: typeof articles }> = []
 
     for (const [sector, varieties] of Object.entries(SECTOR_VARIETIES)) {
       for (const variety of varieties) {
         const relevant = articles.filter(
           (a) => a.title.includes(variety) || a.content.includes(variety)
         )
-
-        if (relevant.length === 0) continue
-
-        console.log('[futures-analysis/refresh] analyzing', variety, 'with', relevant.length, 'articles')
-
-        const analysis = await analyzeFuturesVariety(
-          variety,
-          relevant.map((a) => ({ title: a.title, content: a.content, source: a.source }))
-        )
-
-        if (!analysis) continue
-
-        await prisma.futuresVarietyAnalysis.upsert({
-          where: { variety },
-          create: {
-            variety: analysis.variety,
-            sector,
-            contradiction: analysis.contradiction,
-            opportunity: analysis.opportunity,
-            bullCase: analysis.bullCase,
-            bearCase: analysis.bearCase,
-            sentiment: analysis.sentiment,
-          },
-          update: {
-            sector,
-            contradiction: analysis.contradiction,
-            opportunity: analysis.opportunity,
-            bullCase: analysis.bullCase,
-            bearCase: analysis.bearCase,
-            sentiment: analysis.sentiment,
-          },
-        })
-
-        results.push(variety)
+        if (relevant.length > 0) tasks.push({ sector, variety, relevant })
       }
+    }
+
+    console.log('[futures-analysis/refresh] total tasks:', tasks.length)
+
+    const BATCH = 5
+    const results: string[] = []
+
+    for (let i = 0; i < tasks.length; i += BATCH) {
+      const batch = tasks.slice(i, i + BATCH)
+      await Promise.all(
+        batch.map(async ({ sector, variety, relevant }) => {
+          console.log('[futures-analysis/refresh] analyzing', variety, 'with', relevant.length, 'articles')
+          const analysis = await analyzeFuturesVariety(
+            variety,
+            relevant.map((a) => ({ title: a.title, content: a.content, source: a.source }))
+          )
+          if (!analysis) return
+          await prisma.futuresVarietyAnalysis.upsert({
+            where: { variety },
+            create: {
+              variety: analysis.variety,
+              sector,
+              contradiction: analysis.contradiction,
+              opportunity: analysis.opportunity,
+              bullCase: analysis.bullCase,
+              bearCase: analysis.bearCase,
+              sentiment: analysis.sentiment,
+            },
+            update: {
+              sector,
+              contradiction: analysis.contradiction,
+              opportunity: analysis.opportunity,
+              bullCase: analysis.bullCase,
+              bearCase: analysis.bearCase,
+              sentiment: analysis.sentiment,
+            },
+          })
+          results.push(variety)
+        })
+      )
     }
 
     return NextResponse.json({ updated: results.length, varieties: results })
