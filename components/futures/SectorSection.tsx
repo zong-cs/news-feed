@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { VarietyAnalysisCard } from './VarietyAnalysisCard'
 
 interface Analysis {
-  id: string
+  id: number
   variety: string
   sector: string | null
   contradiction: string
