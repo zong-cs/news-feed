@@ -4,6 +4,8 @@
  * period: '01' = 日线, '10' = 周线
  *
  * 自动探测主力合约月份（从当月起往后 12 个月枚举，找到有数据的合约）
+ * 注意：ZCE（郑商所）品种代码需大写（如 MA2609），SHFE/DCE/INE 用小写
+ * 注意：GFEX 品种（碳酸锂lc、多晶硅ps）和天然气(ng)在THS暂无数据，已跳过
  */
 
 export interface KBar {
@@ -16,16 +18,18 @@ export interface KBar {
 }
 
 // 期货品种名称 → 同花顺品种代码（不含月份）
+// ZCE（郑商所）品种代码需大写，SHFE/DCE/INE 用小写
 const VARIETY_TO_CODE: Record<string, string> = {
-  // 黑色金属 SHFE/DCE/ZCE
+  // 黑色金属 SHFE/DCE
   '螺纹钢':  'rb',
   '热轧卷板': 'hc',
   '铁矿石':  'i',
   '焦炭':    'j',
   '焦煤':    'jm',
-  '硅铁':    'sf',
-  '锰硅':    'sm',
-  // 有色金属 SHFE/GFEX
+  // 黑色金属 ZCE（大写）
+  '硅铁':    'SF',
+  '锰硅':    'SM',
+  // 有色金属 SHFE
   '铜':      'cu',
   '铝':      'al',
   '锌':      'zn',
@@ -34,8 +38,6 @@ const VARIETY_TO_CODE: Record<string, string> = {
   '锡':      'sn',
   '氧化铝':  'ao',
   '工业硅':  'si',
-  '碳酸锂':  'lc',
-  '多晶硅':  'ps',
   // 贵金属 SHFE
   '黄金':    'au',
   '白银':    'ag',
@@ -43,34 +45,35 @@ const VARIETY_TO_CODE: Record<string, string> = {
   '原油':    'sc',
   '燃料油':  'fu',
   '沥青':    'bu',
-  '天然气':  'ng',
-  // 化工 ZCE/DCE/SHFE
-  '甲醇':    'ma',
+  // 化工 DCE/SHFE
   '乙二醇':  'eg',
   'PTA':     'ta',
   '苯乙烯':  'eb',
   'PVC':     'v',
   '橡胶':    'ru',
-  '纯碱':    'sa',
-  '烧碱':    'sh',
-  '尿素':    'ur',
   '纸浆':    'sp',
-  '玻璃':    'fg',
-  // 农产品 DCE/ZCE
+  // 化工 ZCE（大写）
+  '甲醇':    'MA',
+  '纯碱':    'SA',
+  '烧碱':    'SH',
+  '尿素':    'UR',
+  '玻璃':    'FG',
+  // 农产品 DCE
   '豆粕':    'm',
   '豆油':    'y',
   '大豆':    'a',
   '玉米':    'c',
-  '棉花':    'cf',
-  '白糖':    'sr',
   '棕榈油':  'p',
-  '菜粕':    'rm',
-  '菜油':    'oi',
   '花生':    'pg',
   '鸡蛋':    'jd',
   '生猪':    'lh',
-  '苹果':    'ap',
-  '红枣':    'cj',
+  // 农产品 ZCE（大写）
+  '棉花':    'CF',
+  '白糖':    'SR',
+  '菜粕':    'RM',
+  '菜油':    'OI',
+  '苹果':    'AP',
+  '红枣':    'CJ',
 }
 
 const PERIOD_DAILY  = '01'
@@ -93,7 +96,10 @@ async function fetchRaw(symbol: string, period: string): Promise<{ total: number
   const url = `https://d.10jqka.com.cn/v6/line/qh_${symbol}/${period}/last.js`
   try {
     const res = await fetch(url, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        'Referer': 'https://www.10jqka.com.cn/',
+      },
       signal: AbortSignal.timeout(8000),
     })
     if (!res.ok) return null
