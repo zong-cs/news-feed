@@ -27,7 +27,6 @@ import { THSFuturesScraper } from './thsfutures'
 import { EMFuturesScraper } from './emfutures'
 import { NanhuaScraper } from './nanhua'
 import { GTJAQHScraper } from './gtjaqh'
-import { HTQHScraper } from './htqh'
 import { ALL_SOURCES, SourceName } from './sources'
 
 export { ALL_SOURCES, type SourceName } from './sources'
@@ -61,7 +60,6 @@ const scraperMap: Record<SourceName, () => BaseScraper> = {
   emfutures: () => new EMFuturesScraper(),
   nanhua: () => new NanhuaScraper(),
   gtjaqh: () => new GTJAQHScraper(),
-  htqh: () => new HTQHScraper(),
 }
 
 export function getScraperForSource(source: string): BaseScraper {

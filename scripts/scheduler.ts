@@ -50,7 +50,6 @@ const FUTURES_SOURCES = [
   'citicsf',
   'nanhua',
   'gtjaqh',
-  'htqh',
 ]
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
