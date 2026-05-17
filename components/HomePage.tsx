@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { HotNews } from '@/components/news/HotNews'
 import { InstrumentGrid } from '@/components/instruments/InstrumentGrid'
+import { FuturesAnalysis } from '@/components/futures/FuturesAnalysis'
 
 const TABS = [
   { key: 'commodity', label: '大宗商品' },
@@ -25,20 +26,12 @@ export function HomePage() {
             <h1 className="text-2xl font-bold text-gray-900">财经新闻聚合</h1>
             <p className="text-sm text-gray-500 mt-1">实时市场资讯 · 每60秒自动刷新</p>
           </div>
-          <div className="flex items-center gap-3">
-            <a
-              href="/futures-analysis"
-              className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 transition-colors"
-            >
-              期货分析
-            </a>
-            <a
-              href="/admin"
-              className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 transition-colors"
-            >
-              Admin
-            </a>
-          </div>
+          <a
+            href="/admin"
+            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 transition-colors"
+          >
+            Admin
+          </a>
         </div>
 
         {/* Hot macro news */}
@@ -67,7 +60,10 @@ export function HomePage() {
               </button>
             ))}
           </div>
+
           <InstrumentGrid type={activeTab} />
+
+          {activeTab === 'commodity' && <FuturesAnalysis />}
         </section>
 
       </div>
