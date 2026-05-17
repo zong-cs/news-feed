@@ -93,11 +93,11 @@ export function VarietyAnalysisCard({ analysis }: { analysis: Analysis }) {
           )}
           {signalCfg && (
             <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${signalCfg.color}`}>
-              {signalCfg.label}
+              技术 {signalCfg.label}
             </span>
           )}
           <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${cfg.bg} ${cfg.text}`}>
-            {cfg.label}
+            基本面 {cfg.label}
           </span>
           <button
             onClick={() => setCollapsed((v) => !v)}
