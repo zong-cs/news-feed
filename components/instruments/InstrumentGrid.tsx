@@ -4,13 +4,18 @@ import { useEffect, useState } from 'react'
 import { Instrument } from '@/types'
 import { InstrumentCard } from './InstrumentCard'
 
-export function InstrumentGrid() {
+interface Props {
+  type?: string
+}
+
+export function InstrumentGrid({ type }: Props) {
   const [instruments, setInstruments] = useState<Instrument[]>([])
   const [loading, setLoading] = useState(true)
 
   async function load() {
     try {
-      const res = await fetch('/api/instruments')
+      const url = type ? `/api/instruments?type=${type}` : '/api/instruments'
+      const res = await fetch(url)
       if (res.ok) setInstruments(await res.json())
     } finally {
       setLoading(false)
@@ -18,10 +23,11 @@ export function InstrumentGrid() {
   }
 
   useEffect(() => {
+    setLoading(true)
     load()
     const id = setInterval(load, 60_000)
     return () => clearInterval(id)
-  }, [])
+  }, [type])
 
   if (loading) {
     return (
@@ -35,15 +41,8 @@ export function InstrumentGrid() {
 
   if (instruments.length === 0) {
     return (
-      <div className="text-center py-20 text-gray-400">
-        <p className="text-lg">暂无标的数据</p>
-        <p className="text-sm mt-1">
-          前往{' '}
-          <a href="/admin" className="text-blue-500 underline">
-            Admin
-          </a>{' '}
-          触发爬虫
-        </p>
+      <div className="text-center py-16 text-gray-400">
+        <p className="text-sm">暂无数据，前往 <a href="/admin" className="text-blue-500 underline">Admin</a> 触发爬虫</p>
       </div>
     )
   }
