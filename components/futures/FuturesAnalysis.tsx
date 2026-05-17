@@ -59,8 +59,8 @@ export function FuturesAnalysis() {
     <div className="mt-8 space-y-8">
       <div className="flex items-center gap-2">
         <span className="inline-block w-1.5 h-4 rounded-full bg-yellow-500" />
-        <h2 className="text-base font-semibold text-gray-700">期货品种 AI 分析</h2>
-        <span className="text-xs text-gray-400">· 矛盾 · 机会 · 多空依据</span>
+        <h2 className="text-base font-semibold text-slate-300">期货品种 AI 分析</h2>
+        <span className="text-xs text-slate-500">· 矛盾 · 机会 · 多空依据</span>
       </div>
       <div className="space-y-8">
         {sectors.map((sector) => (

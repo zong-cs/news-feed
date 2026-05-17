@@ -66,9 +66,9 @@ export function VarietyAnalysisCard({ analysis }: { analysis: Analysis }) {
   const [tab, setTab] = useState<'fundamental' | 'technical'>('fundamental')
 
   const sentimentConfig = {
-    bullish: { label: '看多', bg: 'bg-green-100', text: 'text-green-700', border: 'border-green-200' },
-    bearish: { label: '看空', bg: 'bg-red-100', text: 'text-red-700', border: 'border-red-200' },
-    neutral: { label: '中性', bg: 'bg-gray-100', text: 'text-gray-600', border: 'border-gray-200' },
+    bullish: { label: '看多', bg: 'bg-green-900/50', text: 'text-green-400', border: 'border-green-700' },
+    bearish: { label: '看空', bg: 'bg-red-900/50', text: 'text-red-400', border: 'border-red-700' },
+    neutral: { label: '中性', bg: 'bg-slate-700/50', text: 'text-slate-400', border: 'border-slate-600' },
   }
   const cfg = sentimentConfig[analysis.sentiment as keyof typeof sentimentConfig] ?? sentimentConfig.neutral
 
@@ -83,13 +83,13 @@ export function VarietyAnalysisCard({ analysis }: { analysis: Analysis }) {
   const signalCfg = ta ? (SIGNAL_CONFIG[ta.signal] ?? SIGNAL_CONFIG.neutral) : null
 
   return (
-    <div className={`rounded-xl border ${cfg.border} bg-white shadow-sm overflow-hidden`}>
+    <div className={`rounded-xl border ${cfg.border} bg-slate-800/80 shadow-sm overflow-hidden`}>
       {/* Header */}
       <div className="flex items-center justify-between px-5 pt-4 pb-3">
-        <h3 className="text-base font-bold text-gray-900">{analysis.variety}</h3>
+        <h3 className="text-base font-bold text-slate-100">{analysis.variety}</h3>
         <div className="flex items-center gap-2">
           {sources.length === 0 && collapsed && (
-            <span className="text-xs text-gray-400">暂无相关新闻</span>
+            <span className="text-xs text-slate-500">暂无相关新闻</span>
           )}
           {signalCfg && (
             <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${signalCfg.color}`}>
@@ -101,7 +101,7 @@ export function VarietyAnalysisCard({ analysis }: { analysis: Analysis }) {
           </span>
           <button
             onClick={() => setCollapsed((v) => !v)}
-            className="text-gray-400 hover:text-gray-600 ml-1 text-xs"
+            className="text-slate-500 hover:text-slate-300 ml-1 text-xs"
           >
             {collapsed ? '▼' : '▲'}
           </button>
@@ -110,11 +110,11 @@ export function VarietyAnalysisCard({ analysis }: { analysis: Analysis }) {
 
       {!collapsed && (<>
       {/* Tabs */}
-      <div className="flex border-b border-gray-100 px-5">
+      <div className="flex border-b border-slate-700 px-5">
         <button
           onClick={() => setTab('fundamental')}
           className={`text-xs font-medium py-2 mr-4 border-b-2 transition-colors ${
-            tab === 'fundamental' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-400 hover:text-gray-600'
+            tab === 'fundamental' ? 'border-blue-500 text-blue-400' : 'border-transparent text-slate-500 hover:text-slate-300'
           }`}
         >
           基本面
@@ -122,10 +122,10 @@ export function VarietyAnalysisCard({ analysis }: { analysis: Analysis }) {
         <button
           onClick={() => setTab('technical')}
           className={`text-xs font-medium py-2 border-b-2 transition-colors ${
-            tab === 'technical' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-400 hover:text-gray-600'
+            tab === 'technical' ? 'border-blue-500 text-blue-400' : 'border-transparent text-slate-500 hover:text-slate-300'
           }`}
         >
-          技术面 {!ta && <span className="text-gray-300">（暂无）</span>}
+          技术面 {!ta && <span className="text-slate-600">（暂无）</span>}
         </button>
       </div>
 
@@ -133,29 +133,29 @@ export function VarietyAnalysisCard({ analysis }: { analysis: Analysis }) {
         {/* Fundamental tab */}
         {tab === 'fundamental' && (
           <>
-            <div className="mb-3 rounded-lg bg-red-50 border border-red-100 p-3">
-              <p className="text-xs font-semibold text-red-600 mb-1">核心矛盾</p>
-              <p className="text-sm text-red-800 leading-relaxed">{analysis.contradiction}</p>
+            <div className="mb-3 rounded-lg bg-red-950/40 border border-red-900/50 p-3">
+              <p className="text-xs font-semibold text-red-400 mb-1">核心矛盾</p>
+              <p className="text-sm text-red-200 leading-relaxed">{analysis.contradiction}</p>
             </div>
-            <div className="mb-3 rounded-lg bg-blue-50 border border-blue-100 p-3">
-              <p className="text-xs font-semibold text-blue-600 mb-1">交易机会</p>
-              <p className="text-sm text-blue-800 leading-relaxed">{analysis.opportunity}</p>
+            <div className="mb-3 rounded-lg bg-blue-950/40 border border-blue-900/50 p-3">
+              <p className="text-xs font-semibold text-blue-400 mb-1">交易机会</p>
+              <p className="text-sm text-blue-200 leading-relaxed">{analysis.opportunity}</p>
             </div>
             <div className="grid grid-cols-2 gap-3 mb-3">
-              <div className="rounded-lg bg-green-50 border border-green-100 p-3">
-                <p className="text-xs font-semibold text-green-600 mb-1">做多依据</p>
-                <p className="text-xs text-green-800 leading-relaxed">{analysis.bullCase}</p>
+              <div className="rounded-lg bg-green-950/40 border border-green-900/50 p-3">
+                <p className="text-xs font-semibold text-green-400 mb-1">做多依据</p>
+                <p className="text-xs text-green-200 leading-relaxed">{analysis.bullCase}</p>
               </div>
-              <div className="rounded-lg bg-red-50 border border-red-100 p-3">
-                <p className="text-xs font-semibold text-red-600 mb-1">做空依据</p>
-                <p className="text-xs text-red-800 leading-relaxed">{analysis.bearCase}</p>
+              <div className="rounded-lg bg-red-950/40 border border-red-900/50 p-3">
+                <p className="text-xs font-semibold text-red-400 mb-1">做空依据</p>
+                <p className="text-xs text-red-200 leading-relaxed">{analysis.bearCase}</p>
               </div>
             </div>
             {sources.length > 0 && (
-              <div className="border-t border-gray-100 pt-3">
+              <div className="border-t border-slate-700 pt-3">
                 <button
                   onClick={() => setShowSources((v) => !v)}
-                  className="text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1"
+                  className="text-xs text-slate-500 hover:text-slate-300 flex items-center gap-1"
                 >
                   <span>参考来源 ({sources.length})</span>
                   <span>{showSources ? '▲' : '▼'}</span>
@@ -164,16 +164,16 @@ export function VarietyAnalysisCard({ analysis }: { analysis: Analysis }) {
                   <ul className="mt-2 space-y-1">
                     {sources.map((s, i) => (
                       <li key={i} className="flex items-start gap-1.5 text-xs">
-                        <span className="shrink-0 mt-0.5 px-1.5 py-0.5 rounded bg-gray-100 text-gray-500 text-[10px]">
+                        <span className="shrink-0 mt-0.5 px-1.5 py-0.5 rounded bg-slate-700 text-slate-400 text-[10px]">
                           {SOURCE_LABELS[s.source] ?? s.source}
                         </span>
                         {s.url ? (
                           <a href={s.url} target="_blank" rel="noopener noreferrer"
-                            className="text-gray-600 hover:text-blue-600 hover:underline leading-relaxed line-clamp-2">
+                            className="text-slate-400 hover:text-blue-400 hover:underline leading-relaxed line-clamp-2">
                             {s.title}
                           </a>
                         ) : (
-                          <span className="text-gray-600 leading-relaxed line-clamp-2">{s.title}</span>
+                          <span className="text-slate-400 leading-relaxed line-clamp-2">{s.title}</span>
                         )}
                       </li>
                     ))}
@@ -186,7 +186,7 @@ export function VarietyAnalysisCard({ analysis }: { analysis: Analysis }) {
 
         {/* Technical tab */}
         {tab === 'technical' && !ta && (
-          <div className="text-center py-8 text-gray-400 text-sm">
+          <div className="text-center py-8 text-slate-500 text-sm">
             技术分析暂未生成，请在 Admin 页面点击「刷新技术分析」
           </div>
         )}
@@ -194,83 +194,83 @@ export function VarietyAnalysisCard({ analysis }: { analysis: Analysis }) {
           <>
             {/* Trend */}
             <div className="grid grid-cols-2 gap-3 mb-3">
-              <div className="rounded-lg bg-gray-50 border border-gray-200 p-3">
-                <p className="text-xs font-semibold text-gray-500 mb-1">日线趋势</p>
+              <div className="rounded-lg bg-slate-700/50 border border-slate-600 p-3">
+                <p className="text-xs font-semibold text-slate-400 mb-1">日线趋势</p>
                 <p className={`text-sm font-bold ${TREND_COLOR[ta.dailyTrend]}`}>{TREND_LABEL[ta.dailyTrend]}</p>
               </div>
-              <div className="rounded-lg bg-gray-50 border border-gray-200 p-3">
-                <p className="text-xs font-semibold text-gray-500 mb-1">周线趋势</p>
+              <div className="rounded-lg bg-slate-700/50 border border-slate-600 p-3">
+                <p className="text-xs font-semibold text-slate-400 mb-1">周线趋势</p>
                 <p className={`text-sm font-bold ${TREND_COLOR[ta.weeklyTrend]}`}>{TREND_LABEL[ta.weeklyTrend]}</p>
               </div>
             </div>
 
             {/* Cycle position */}
-            <div className="mb-3 rounded-lg bg-purple-50 border border-purple-100 p-3">
-              <p className="text-xs font-semibold text-purple-600 mb-1">周期位置</p>
-              <p className="text-sm text-purple-800 leading-relaxed">{ta.cyclePosition}</p>
+            <div className="mb-3 rounded-lg bg-purple-950/40 border border-purple-900/50 p-3">
+              <p className="text-xs font-semibold text-purple-400 mb-1">周期位置</p>
+              <p className="text-sm text-purple-200 leading-relaxed">{ta.cyclePosition}</p>
             </div>
 
             {/* Support / Resistance */}
             <div className="mb-3 grid grid-cols-2 gap-3">
-              <div className="rounded-lg bg-green-50 border border-green-100 p-3">
-                <p className="text-xs font-semibold text-green-600 mb-2">支撑位</p>
+              <div className="rounded-lg bg-green-950/40 border border-green-900/50 p-3">
+                <p className="text-xs font-semibold text-green-400 mb-2">支撑位</p>
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs">
-                    <span className="text-gray-500">S1</span>
-                    <span className="font-mono font-semibold text-green-700">{ta.support1}</span>
+                    <span className="text-slate-500">S1</span>
+                    <span className="font-mono font-semibold text-green-400">{ta.support1}</span>
                   </div>
                   <div className="flex justify-between text-xs">
-                    <span className="text-gray-500">S2</span>
-                    <span className="font-mono font-semibold text-green-700">{ta.support2}</span>
+                    <span className="text-slate-500">S2</span>
+                    <span className="font-mono font-semibold text-green-400">{ta.support2}</span>
                   </div>
                 </div>
               </div>
-              <div className="rounded-lg bg-red-50 border border-red-100 p-3">
-                <p className="text-xs font-semibold text-red-600 mb-2">压力位</p>
+              <div className="rounded-lg bg-red-950/40 border border-red-900/50 p-3">
+                <p className="text-xs font-semibold text-red-400 mb-2">压力位</p>
                 <div className="space-y-1">
                   <div className="flex justify-between text-xs">
-                    <span className="text-gray-500">R1</span>
-                    <span className="font-mono font-semibold text-red-700">{ta.resistance1}</span>
+                    <span className="text-slate-500">R1</span>
+                    <span className="font-mono font-semibold text-red-400">{ta.resistance1}</span>
                   </div>
                   <div className="flex justify-between text-xs">
-                    <span className="text-gray-500">R2</span>
-                    <span className="font-mono font-semibold text-red-700">{ta.resistance2}</span>
+                    <span className="text-slate-500">R2</span>
+                    <span className="font-mono font-semibold text-red-400">{ta.resistance2}</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Entry */}
-            <div className="mb-3 rounded-lg bg-blue-50 border border-blue-100 p-3">
+            <div className="mb-3 rounded-lg bg-blue-950/40 border border-blue-900/50 p-3">
               <div className="flex items-center justify-between mb-2">
-                <p className="text-xs font-semibold text-blue-600">入场建议</p>
-                <span className="text-xs font-mono font-bold text-blue-700">盈亏比 {ta.riskRewardRatio}</span>
+                <p className="text-xs font-semibold text-blue-400">入场建议</p>
+                <span className="text-xs font-mono font-bold text-blue-400">盈亏比 {ta.riskRewardRatio}</span>
               </div>
               <div className="grid grid-cols-3 gap-2 mb-2">
                 <div className="text-center">
-                  <p className="text-[10px] text-gray-400 mb-0.5">入场</p>
-                  <p className="text-xs font-mono font-bold text-blue-700">{ta.entryPoint}</p>
+                  <p className="text-[10px] text-slate-500 mb-0.5">入场</p>
+                  <p className="text-xs font-mono font-bold text-blue-400">{ta.entryPoint}</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-[10px] text-gray-400 mb-0.5">止损</p>
-                  <p className="text-xs font-mono font-bold text-red-600">{ta.stopLoss}</p>
+                  <p className="text-[10px] text-slate-500 mb-0.5">止损</p>
+                  <p className="text-xs font-mono font-bold text-red-400">{ta.stopLoss}</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-[10px] text-gray-400 mb-0.5">目标</p>
-                  <p className="text-xs font-mono font-bold text-green-600">{ta.target1}</p>
+                  <p className="text-[10px] text-slate-500 mb-0.5">目标</p>
+                  <p className="text-xs font-mono font-bold text-green-400">{ta.target1}</p>
                 </div>
               </div>
-              <p className="text-xs text-blue-700 leading-relaxed">{ta.entryLogic}</p>
+              <p className="text-xs text-blue-300 leading-relaxed">{ta.entryLogic}</p>
             </div>
 
             {/* Summary */}
-            <div className="rounded-lg bg-gray-50 border border-gray-200 p-3">
-              <p className="text-xs font-semibold text-gray-500 mb-1">技术综述</p>
-              <p className="text-xs text-gray-700 leading-relaxed">{ta.summary}</p>
+            <div className="rounded-lg bg-slate-700/50 border border-slate-600 p-3">
+              <p className="text-xs font-semibold text-slate-400 mb-1">技术综述</p>
+              <p className="text-xs text-slate-300 leading-relaxed">{ta.summary}</p>
             </div>
 
             {analysis.technicalUpdatedAt && (
-              <p className="mt-3 text-xs text-gray-400 text-right">
+              <p className="mt-3 text-xs text-slate-600 text-right">
                 技术分析更新于 {new Date(analysis.technicalUpdatedAt).toLocaleString('zh-CN')}
               </p>
             )}
@@ -278,7 +278,7 @@ export function VarietyAnalysisCard({ analysis }: { analysis: Analysis }) {
         )}
 
         {tab === 'fundamental' && (
-          <p className="mt-3 text-xs text-gray-400 text-right">
+          <p className="mt-3 text-xs text-slate-600 text-right">
             基本面更新于 {new Date(analysis.updatedAt).toLocaleString('zh-CN')}
           </p>
         )}

@@ -23,11 +23,11 @@ export function SectorSection({ sector, analyses }: { sector: string; analyses: 
     <section>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center gap-2 text-left mb-4 pb-2 border-b border-gray-200 group"
+        className="w-full flex items-center gap-2 text-left mb-4 pb-2 border-b border-slate-700 group"
       >
-        <span className="text-base font-semibold text-gray-800">{sector}</span>
-        <span className="text-sm font-normal text-gray-400">({analyses.length})</span>
-        <span className="ml-auto text-gray-400 text-sm group-hover:text-gray-600">
+        <span className="text-base font-semibold text-slate-200">{sector}</span>
+        <span className="text-sm font-normal text-slate-500">({analyses.length})</span>
+        <span className="ml-auto text-slate-500 text-sm group-hover:text-slate-300">
           {open ? '▲' : '▼'}
         </span>
       </button>

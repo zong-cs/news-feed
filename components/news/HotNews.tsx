@@ -73,19 +73,19 @@ export function HotNews() {
           href={article.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="block rounded-xl border border-gray-200 bg-white p-4 hover:border-gray-300 hover:shadow-sm transition-all"
+          className="block rounded-xl border border-slate-700 bg-slate-800/60 p-4 hover:border-slate-500 hover:bg-slate-800 transition-all"
         >
           <div className="flex items-start justify-between gap-2 mb-2">
-            <h3 className="text-sm font-medium text-gray-900 line-clamp-2 flex-1">
+            <h3 className="text-sm font-medium text-slate-100 line-clamp-2 flex-1">
               {article.title}
             </h3>
             {article.sentiment && <SentimentBadge sentiment={article.sentiment} />}
           </div>
           {article.summary && (
-            <p className="text-xs text-gray-500 line-clamp-2 mb-3">{article.summary}</p>
+            <p className="text-xs text-slate-400 line-clamp-2 mb-3">{article.summary}</p>
           )}
-          <div className="flex items-center gap-2 text-xs text-gray-400">
-            <span className="font-medium text-gray-500">
+          <div className="flex items-center gap-2 text-xs text-slate-500">
+            <span className="font-medium text-slate-400">
               {sourceLabel[article.source] ?? article.source}
             </span>
             <span>·</span>

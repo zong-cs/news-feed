@@ -17,18 +17,18 @@ export function HomePage() {
   const [activeTab, setActiveTab] = useState<TabKey>('commodity')
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-[#0f1117]">
       <div className="max-w-7xl mx-auto px-4 py-8">
 
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Trading Desk</h1>
-            <p className="text-sm text-gray-500 mt-1">实时市场资讯 · 每60秒自动刷新</p>
+            <h1 className="text-2xl font-bold text-white">Trading Desk</h1>
+            <p className="text-sm text-slate-400 mt-1">实时市场资讯 · 每60秒自动刷新</p>
           </div>
           <a
             href="/admin"
-            className="rounded-md border border-gray-300 px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 transition-colors"
+            className="rounded-md border border-slate-600 px-3 py-1.5 text-sm text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-colors"
           >
             Admin
           </a>
@@ -36,7 +36,7 @@ export function HomePage() {
 
         {/* Hot macro news */}
         <section className="mb-10">
-          <h2 className="text-base font-semibold text-gray-700 mb-3 flex items-center gap-2">
+          <h2 className="text-base font-semibold text-slate-300 mb-3 flex items-center gap-2">
             <span className="inline-block w-1.5 h-4 rounded-full bg-red-500" />
             宏观热点
           </h2>
@@ -45,15 +45,15 @@ export function HomePage() {
 
         {/* Tabs */}
         <section>
-          <div className="flex gap-1 border-b border-gray-200 mb-6">
+          <div className="flex gap-1 border-b border-slate-700 mb-6">
             {TABS.map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
                 className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 -mb-px ${
                   activeTab === tab.key
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                    ? 'border-blue-500 text-blue-400'
+                    : 'border-transparent text-slate-500 hover:text-slate-300'
                 }`}
               >
                 {tab.label}
