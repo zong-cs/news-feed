@@ -61,9 +61,9 @@ export function HomePage() {
             ))}
           </div>
 
-          {activeTab !== 'commodity' && <InstrumentGrid type={activeTab} />}
+          <InstrumentGrid type={activeTab} />
 
-          {activeTab === 'commodity' && <FuturesAnalysis />}
+          {/* activeTab === 'commodity' && <FuturesAnalysis /> */}
         </section>
 
       </div>
