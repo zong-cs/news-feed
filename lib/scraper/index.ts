@@ -25,6 +25,9 @@ import { ZTQHScraper } from './ztqh'
 import { ZLQHScraper } from './zlqh'
 import { THSFuturesScraper } from './thsfutures'
 import { EMFuturesScraper } from './emfutures'
+import { NanhuaScraper } from './nanhua'
+import { GTJAQHScraper } from './gtjaqh'
+import { HTQHScraper } from './htqh'
 import { ALL_SOURCES, SourceName } from './sources'
 
 export { ALL_SOURCES, type SourceName } from './sources'
@@ -56,6 +59,9 @@ const scraperMap: Record<SourceName, () => BaseScraper> = {
   zlqh: () => new ZLQHScraper(),
   thsfutures: () => new THSFuturesScraper(),
   emfutures: () => new EMFuturesScraper(),
+  nanhua: () => new NanhuaScraper(),
+  gtjaqh: () => new GTJAQHScraper(),
+  htqh: () => new HTQHScraper(),
 }
 
 export function getScraperForSource(source: string): BaseScraper {

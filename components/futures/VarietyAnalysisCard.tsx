@@ -55,10 +55,10 @@ const SIGNAL_CONFIG: Record<string, { label: string; color: string }> = {
 }
 
 const SOURCE_LABELS: Record<string, string> = {
-  eafutures: '东证期货', ztqh: '中泰期货', zlqh: '浙商期货', thsfutures: '同花顺期货',
+  eafutures: '东亚期货', ztqh: '中泰期货', zlqh: '中粮期货', thsfutures: '同花顺期货',
   emfutures: '东方财富期货', citicsf: '中信期货', eastmoney: '东方财富', cls: '财联社',
   sina: '新浪财经', wallstreetcn: '华尔街见闻', stcn: '证券时报', tonghuashun: '同花顺',
-  xueqiu: '雪球',
+  xueqiu: '雪球', nanhua: '南华期货', gtjaqh: '国泰君安期货', htqh: '华泰期货',
 }
 
 export function VarietyAnalysisCard({ analysis }: { analysis: Analysis }) {

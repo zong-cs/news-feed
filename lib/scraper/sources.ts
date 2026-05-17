@@ -25,6 +25,9 @@ export const ALL_SOURCES = [
   'zlqh',
   'thsfutures',
   'emfutures',
+  'nanhua',
+  'gtjaqh',
+  'htqh',
 ] as const
 
 export type SourceName = (typeof ALL_SOURCES)[number]
