@@ -11,6 +11,7 @@
 import cron from 'node-cron'
 import { runScrapeJob } from '../lib/news/scrape-job'
 import { refreshFuturesAnalysis } from '../lib/futures/refresh'
+import { refreshTechnicalAnalysis } from '../lib/futures/technical-refresh'
 
 // ── Source groups ────────────────────────────────────────────────────────────
 
@@ -71,15 +72,24 @@ async function scrapeAll(sources: string[], tag: string) {
   log(tag, `done — total new articles: ${total}`)
 }
 
-/** Scrape futures sources then run AI analysis refresh. */
+/** Scrape futures sources, run fundamental AI analysis, then technical analysis. */
 async function futuresDailyJob() {
   await scrapeAll(FUTURES_SOURCES, 'futures-scrape')
-  log('futures-analysis', 'starting AI refresh')
+
+  log('futures-analysis', 'starting fundamental AI refresh')
   try {
     const { updated, varieties } = await refreshFuturesAnalysis()
     log('futures-analysis', `done — updated ${updated} varieties: ${varieties.join(', ')}`)
   } catch (err) {
     log('futures-analysis', `ERROR — ${err instanceof Error ? err.message : String(err)}`)
+  }
+
+  log('technical-analysis', 'starting technical AI refresh')
+  try {
+    const { updated, varieties } = await refreshTechnicalAnalysis()
+    log('technical-analysis', `done — updated ${updated} varieties: ${varieties.join(', ')}`)
+  } catch (err) {
+    log('technical-analysis', `ERROR — ${err instanceof Error ? err.message : String(err)}`)
   }
 }
 
@@ -113,4 +123,4 @@ cron.schedule('0 22 * * *', () => {
 log('scheduler', 'started')
 log('scheduler', '  crypto  — every hour at :05')
 log('scheduler', '  stocks  — every hour at :20')
-log('scheduler', '  futures — daily at 08:00 and 22:00 (scrape + AI refresh)')
+log('scheduler', '  futures — daily at 08:00 and 22:00 (scrape + fundamental + technical)')
