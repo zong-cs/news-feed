@@ -44,7 +44,8 @@ export abstract class BaseScraper {
   abstract scrape(): Promise<ScrapedArticle[]>
 
   protected async withBrowser<T>(fn: (browser: Browser) => Promise<T>): Promise<T> {
-    const browser = await chromium.launch({ headless: true })
+    const executablePath = process.env.CHROMIUM_PATH || undefined
+    const browser = await chromium.launch({ headless: true, executablePath })
     try {
       return await fn(browser)
     } finally {
