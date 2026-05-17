@@ -6,7 +6,7 @@ import { InstrumentGrid } from '@/components/instruments/InstrumentGrid'
 import { FuturesAnalysis } from '@/components/futures/FuturesAnalysis'
 
 const TABS = [
-  // { key: 'commodity', label: '大宗商品' },
+  { key: 'commodity', label: '大宗商品' },
   { key: 'crypto', label: '加密货币' },
   { key: 'stock', label: '股市' },
 ] as const
@@ -14,7 +14,7 @@ const TABS = [
 type TabKey = (typeof TABS)[number]['key']
 
 export function HomePage() {
-  const [activeTab, setActiveTab] = useState<TabKey>('crypto')
+  const [activeTab, setActiveTab] = useState<TabKey>('commodity')
 
   return (
     <main className="min-h-screen bg-gray-50">
@@ -61,9 +61,10 @@ export function HomePage() {
             ))}
           </div>
 
-          <InstrumentGrid type={activeTab} />
+          {/* InstrumentGrid hidden for commodity (data not useful), shown for crypto/stock */}
+          {activeTab !== 'commodity' && <InstrumentGrid type={activeTab} />}
 
-          {/* activeTab === 'commodity' && <FuturesAnalysis /> */}
+          {activeTab === 'commodity' && <FuturesAnalysis />}
         </section>
 
       </div>
