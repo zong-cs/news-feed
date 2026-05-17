@@ -1,8 +1,8 @@
-import OpenAI from 'openai'
+import Anthropic from '@anthropic-ai/sdk'
 
-const client = new OpenAI({
-  apiKey: process.env.MOONSHOT_API_KEY,
-  baseURL: 'https://api.moonshot.cn/v1',
+const client = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+  baseURL: process.env.ANTHROPIC_BASE_URL,
 })
 
 export interface ArticleRef {
@@ -41,7 +41,6 @@ export async function analyzeFuturesVariety(
 ): Promise<FuturesAnalysis | null> {
   if (articles.length === 0) return null
 
-  // Combine up to 10 articles, truncate total to 8000 chars
   const combined = articles
     .slice(0, 10)
     .map((a, i) => `[${i + 1}] 来源:${a.source}\n标题:${a.title}\n内容:${a.content}`)
@@ -50,11 +49,11 @@ export async function analyzeFuturesVariety(
 
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      const response = await client.chat.completions.create({
-        model: 'moonshot-v1-8k',
+      const response = await client.messages.create({
+        model: 'claude-sonnet-4-6',
         max_tokens: 2048,
+        system: SYSTEM_PROMPT,
         messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
           {
             role: 'user',
             content: `品种：${variety}\n\n相关文章：\n${combined}`,
@@ -62,8 +61,7 @@ export async function analyzeFuturesVariety(
         ],
       })
 
-      const raw = response.choices[0]?.message?.content ?? ''
-      // Extract first JSON object block
+      const raw = response.content[0]?.type === 'text' ? response.content[0].text : ''
       const match = raw.match(/\{[\s\S]*\}/)
       const text = match ? match[0] : raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
       console.log('[futures-analysis] raw response for', variety, ':', text.slice(0, 200))

@@ -1,8 +1,8 @@
-import OpenAI from 'openai'
+import Anthropic from '@anthropic-ai/sdk'
 
-const client = new OpenAI({
-  apiKey: process.env.MOONSHOT_API_KEY,
-  baseURL: 'https://api.moonshot.cn/v1',
+const client = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+  baseURL: process.env.ANTHROPIC_BASE_URL,
 })
 
 export interface AnalysisResult {
@@ -45,11 +45,11 @@ export async function analyzeArticle(
   content: string
 ): Promise<AnalysisResult | null> {
   try {
-    const response = await client.chat.completions.create({
-      model: 'kimi-k2.5',
-      max_tokens: 4096,
+    const response = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1024,
+      system: SYSTEM_PROMPT,
       messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
         {
           role: 'user',
           content: `Title: ${title}\n\nContent: ${content.slice(0, 4000)}`,
@@ -57,17 +57,14 @@ export async function analyzeArticle(
       ],
     })
 
-    const raw = response.choices[0]?.message?.content
-      || (response.choices[0]?.message as any)?.reasoning_content
-      || ''
-    // Extract first JSON object block
+    const raw = response.content[0]?.type === 'text' ? response.content[0].text : ''
     const match = raw.match(/\{[\s\S]*\}/)
     const text = match ? match[0] : raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
-    console.log('[kimi] raw response:', raw.slice(0, 200))
+    console.log('[claude] raw response:', raw.slice(0, 200))
     const result = JSON.parse(text) as AnalysisResult
     return result
   } catch (err) {
-    console.error('[kimi] analyzeArticle error:', err)
+    console.error('[claude] analyzeArticle error:', err)
     return null
   }
 }

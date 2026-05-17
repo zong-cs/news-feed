@@ -1,32 +1,32 @@
-import OpenAI from 'openai'
+import Anthropic from '@anthropic-ai/sdk'
 import { KBar } from '@/lib/market/ths'
 
-const client = new OpenAI({
-  apiKey: process.env.MOONSHOT_API_KEY,
-  baseURL: 'https://api.moonshot.cn/v1',
+const client = new Anthropic({
+  apiKey: process.env.ANTHROPIC_API_KEY,
+  baseURL: process.env.ANTHROPIC_BASE_URL,
 })
 
 export interface TechnicalAnalysis {
   // 关键价位
-  support1: number       // 第一支撑位
-  support2: number       // 第二支撑位
-  resistance1: number    // 第一压力位
-  resistance2: number    // 第二压力位
+  support1: number
+  support2: number
+  resistance1: number
+  resistance2: number
   // 周期判断
-  dailyTrend: 'up' | 'down' | 'sideways'   // 日线趋势
-  weeklyTrend: 'up' | 'down' | 'sideways'  // 周线趋势
-  cyclePosition: string  // 周期位置描述，如"日线超跌反弹区，周线下降趋势中"
+  dailyTrend: 'up' | 'down' | 'sideways'
+  weeklyTrend: 'up' | 'down' | 'sideways'
+  cyclePosition: string
   // 入场建议
-  entryPoint: number     // 建议入场价
-  entryLogic: string     // 入场逻辑
-  stopLoss: number       // 止损位
-  target1: number        // 目标位1
-  target2: number        // 目标位2
+  entryPoint: number
+  entryLogic: string
+  stopLoss: number
+  target1: number
+  target2: number
   // 盈亏比
-  riskRewardRatio: string // 如 "1:2.5"
+  riskRewardRatio: string
   // 综合评级
   signal: 'strong_buy' | 'buy' | 'neutral' | 'sell' | 'strong_sell'
-  summary: string        // 技术面综合描述（2-3句）
+  summary: string
 }
 
 const SYSTEM_PROMPT = `你是一位专业的期货技术分析师，擅长K线分析、趋势判断、支撑阻力位识别。
@@ -61,7 +61,6 @@ const SYSTEM_PROMPT = `你是一位专业的期货技术分析师，擅长K线�
 }`
 
 function formatBars(bars: KBar[], label: string): string {
-  // Send last 60 bars to stay within token limits
   const recent = bars.slice(-60)
   const rows = recent.map(
     (b) => `${b.date} O:${b.open} H:${b.high} L:${b.low} C:${b.close} V:${b.volume}`
@@ -83,16 +82,16 @@ export async function analyzeTechnical(
 
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      const response = await client.chat.completions.create({
-        model: 'moonshot-v1-8k',
+      const response = await client.messages.create({
+        model: 'claude-sonnet-4-6',
         max_tokens: 1024,
+        system: SYSTEM_PROMPT,
         messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
           { role: 'user', content: prompt },
         ],
       })
 
-      const raw = response.choices[0]?.message?.content ?? ''
+      const raw = response.content[0]?.type === 'text' ? response.content[0].text : ''
       const match = raw.match(/\{[\s\S]*\}/)
       const text = match ? match[0] : raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
       const parsed = JSON.parse(text) as TechnicalAnalysis
