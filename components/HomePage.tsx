@@ -14,7 +14,7 @@ const TABS = [
 type TabKey = (typeof TABS)[number]['key']
 
 export function HomePage() {
-  const [activeTab, setActiveTab] = useState<TabKey>('commodity')
+  const [activeTab, setActiveTab] = useState<TabKey>('crypto')
 
   return (
     <main className="min-h-screen bg-gray-50">
