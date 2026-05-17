@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "财经新闻聚合",
-  description: "多来源财经新闻聚合 + 交易标的分析",
+  title: "Trading Desk",
+  description: "实时市场资讯 · 期货分析 · 多空依据",
 };
 
 export default function RootLayout({

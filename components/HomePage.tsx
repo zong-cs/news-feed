@@ -23,7 +23,7 @@ export function HomePage() {
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">财经新闻聚合</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Trading Desk</h1>
             <p className="text-sm text-gray-500 mt-1">实时市场资讯 · 每60秒自动刷新</p>
           </div>
           <a
