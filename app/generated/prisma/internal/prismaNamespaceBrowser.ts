@@ -132,6 +132,8 @@ export const FuturesVarietyAnalysisScalarFieldEnum = {
   bearCase: 'bearCase',
   sentiment: 'sentiment',
   sources: 'sources',
+  technicalAnalysis: 'technicalAnalysis',
+  technicalUpdatedAt: 'technicalUpdatedAt',
   updatedAt: 'updatedAt',
   createdAt: 'createdAt'
 } as const
