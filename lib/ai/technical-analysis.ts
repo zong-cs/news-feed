@@ -83,7 +83,7 @@ export async function analyzeTechnical(
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
       const response = await client.messages.create({
-        model: 'claude-sonnet-4-6',
+        model: 'claude-opus-4-7',
         max_tokens: 1024,
         system: SYSTEM_PROMPT,
         messages: [

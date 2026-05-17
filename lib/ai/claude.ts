@@ -46,7 +46,7 @@ export async function analyzeArticle(
 ): Promise<AnalysisResult | null> {
   try {
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-6',
+      model: 'claude-opus-4-7',
       max_tokens: 1024,
       system: SYSTEM_PROMPT,
       messages: [
