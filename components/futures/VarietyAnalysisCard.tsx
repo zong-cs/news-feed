@@ -75,6 +75,8 @@ export function VarietyAnalysisCard({ analysis }: { analysis: Analysis }) {
   let sources: ArticleRef[] = []
   try { sources = JSON.parse(analysis.sources || '[]') } catch { sources = [] }
 
+  const [collapsed, setCollapsed] = useState(sources.length === 0)
+
   let ta: TechnicalAnalysis | null = null
   try { ta = analysis.technicalAnalysis ? JSON.parse(analysis.technicalAnalysis) : null } catch { ta = null }
 
@@ -86,6 +88,9 @@ export function VarietyAnalysisCard({ analysis }: { analysis: Analysis }) {
       <div className="flex items-center justify-between px-5 pt-4 pb-3">
         <h3 className="text-base font-bold text-gray-900">{analysis.variety}</h3>
         <div className="flex items-center gap-2">
+          {sources.length === 0 && collapsed && (
+            <span className="text-xs text-gray-400">暂无相关新闻</span>
+          )}
           {signalCfg && (
             <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${signalCfg.color}`}>
               {signalCfg.label}
@@ -94,9 +99,16 @@ export function VarietyAnalysisCard({ analysis }: { analysis: Analysis }) {
           <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${cfg.bg} ${cfg.text}`}>
             {cfg.label}
           </span>
+          <button
+            onClick={() => setCollapsed((v) => !v)}
+            className="text-gray-400 hover:text-gray-600 ml-1 text-xs"
+          >
+            {collapsed ? '▼' : '▲'}
+          </button>
         </div>
       </div>
 
+      {!collapsed && (<>
       {/* Tabs */}
       <div className="flex border-b border-gray-100 px-5">
         <button
@@ -271,6 +283,7 @@ export function VarietyAnalysisCard({ analysis }: { analysis: Analysis }) {
           </p>
         )}
       </div>
+      </>)}
     </div>
   )
 }

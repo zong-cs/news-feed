@@ -70,7 +70,11 @@ export function InstrumentGrid({ type }: Props) {
 
   // Commodity: grouped by sector
   if (type === 'commodity') {
-    const bySymbol = Object.fromEntries(instruments.map((i) => [i.symbol, i]))
+    const bySymbol: Record<string, Instrument> = {}
+    for (const inst of instruments) {
+      bySymbol[inst.symbol] = inst
+      if (inst.name) bySymbol[inst.name] = inst
+    }
 
     return (
       <div className="space-y-6">

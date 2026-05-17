@@ -6,7 +6,7 @@ import { InstrumentGrid } from '@/components/instruments/InstrumentGrid'
 import { FuturesAnalysis } from '@/components/futures/FuturesAnalysis'
 
 const TABS = [
-  { key: 'commodity', label: '大宗商品' },
+  // { key: 'commodity', label: '大宗商品' },
   { key: 'crypto', label: '加密货币' },
   { key: 'stock', label: '股市' },
 ] as const
@@ -61,7 +61,7 @@ export function HomePage() {
             ))}
           </div>
 
-          <InstrumentGrid type={activeTab} />
+          {activeTab !== 'commodity' && <InstrumentGrid type={activeTab} />}
 
           {activeTab === 'commodity' && <FuturesAnalysis />}
         </section>
