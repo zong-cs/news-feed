@@ -57,7 +57,7 @@ export async function analyzeArticle(
       ],
     })
 
-    const raw = response.content[0]?.type === 'text' ? response.content[0].text : ''
+    const raw = (response.content.find((b) => b.type === 'text') as any)?.text ?? ''
     const match = raw.match(/\{[\s\S]*\}/)
     const text = match ? match[0] : raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
     console.log('[claude] raw response:', raw.slice(0, 200))

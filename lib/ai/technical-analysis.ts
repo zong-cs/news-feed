@@ -91,7 +91,7 @@ export async function analyzeTechnical(
         ],
       })
 
-      const raw = response.content[0]?.type === 'text' ? response.content[0].text : ''
+      const raw = (response.content.find((b) => b.type === 'text') as any)?.text ?? ''
       const match = raw.match(/\{[\s\S]*\}/)
       const text = match ? match[0] : raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
       const parsed = JSON.parse(text) as TechnicalAnalysis
