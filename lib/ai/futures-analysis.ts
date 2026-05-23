@@ -50,7 +50,7 @@ export async function analyzeFuturesVariety(
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
       const response = await client.messages.create({
-        model: 'claude-opus-4-7',
+        model: 'claude-sonnet-4-6',
         max_tokens: 2048,
         system: SYSTEM_PROMPT,
         messages: [
