@@ -74,10 +74,8 @@ async function scrapeAll(sources: string[], tag: string) {
   log(tag, `done — total new articles: ${total}`)
 }
 
-/** Scrape futures sources, run fundamental AI analysis, then technical analysis. */
+/** Run fundamental AI analysis then technical analysis. */
 async function futuresDailyJob() {
-  await scrapeAll(FUTURES_SOURCES, 'futures-scrape')
-
   log('futures-analysis', 'starting fundamental AI refresh')
   try {
     const { updated, varieties } = await refreshFuturesAnalysis()
@@ -111,18 +109,18 @@ cron.schedule('20 * * * *', () => {
   )
 })
 
-// Futures: 08:00 and 22:00 daily
-cron.schedule('0 8 * * *', () => {
-  futuresDailyJob().catch((err) => log('futures', `unhandled error: ${err}`))
+// Futures: scrape every hour at :35, AI analysis once daily at 17:00
+cron.schedule('35 * * * *', () => {
+  scrapeAll(FUTURES_SOURCES, 'futures-scrape').catch((err) => log('futures', `unhandled error: ${err}`))
 })
 
-cron.schedule('0 22 * * *', () => {
+cron.schedule('0 17 * * *', () => {
   futuresDailyJob().catch((err) => log('futures', `unhandled error: ${err}`))
 })
 
 // ── Startup ──────────────────────────────────────────────────────────────────
 
 log('scheduler', 'started')
-log('scheduler', '  crypto  — every hour at :05')
-log('scheduler', '  stocks  — every hour at :20')
-log('scheduler', '  futures — daily at 08:00 and 22:00 (scrape + fundamental + technical)')
+log('scheduler', '  crypto   — every hour at :05')
+log('scheduler', '  stocks   — every hour at :20')
+log('scheduler', '  futures  — scrape every hour at :35, AI analysis daily at 17:00')
