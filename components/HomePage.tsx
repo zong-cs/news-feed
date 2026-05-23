@@ -5,6 +5,21 @@ import { HotNews } from '@/components/news/HotNews'
 import { InstrumentGrid } from '@/components/instruments/InstrumentGrid'
 import { FuturesAnalysis } from '@/components/futures/FuturesAnalysis'
 
+interface Analysis {
+  id: number
+  variety: string
+  sector: string | null
+  contradiction: string
+  opportunity: string
+  bullCase: string
+  bearCase: string
+  sentiment: string
+  sources: string
+  updatedAt: string
+  technicalAnalysis?: string | null
+  technicalUpdatedAt?: string | null
+}
+
 const TABS = [
   { key: 'commodity', label: '大宗商品' },
   { key: 'crypto', label: '加密货币' },
@@ -13,7 +28,7 @@ const TABS = [
 
 type TabKey = (typeof TABS)[number]['key']
 
-export function HomePage() {
+export function HomePage({ initialAnalyses }: { initialAnalyses: Analysis[] }) {
   const [activeTab, setActiveTab] = useState<TabKey>('commodity')
 
   return (
@@ -64,7 +79,7 @@ export function HomePage() {
           {/* InstrumentGrid hidden for commodity (data not useful), shown for crypto/stock */}
           {activeTab !== 'commodity' && <InstrumentGrid type={activeTab} />}
 
-          {activeTab === 'commodity' && <FuturesAnalysis />}
+          {activeTab === 'commodity' && <FuturesAnalysis analyses={initialAnalyses} />}
         </section>
 
       </div>

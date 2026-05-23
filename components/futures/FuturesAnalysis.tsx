@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 import { SectorSection } from '@/components/futures/SectorSection'
 
 interface Analysis {
@@ -14,34 +13,16 @@ interface Analysis {
   sentiment: string
   sources: string
   updatedAt: string
+  technicalAnalysis?: string | null
+  technicalUpdatedAt?: string | null
 }
 
 const SECTOR_ORDER = ['黑色金属', '有色金属', '化工', '农产品', '贵金属', '能源', '金融', '其他']
 
-export function FuturesAnalysis() {
-  const [analyses, setAnalyses] = useState<Analysis[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    fetch('/api/futures-analysis')
-      .then((r) => r.json())
-      .then((data) => setAnalyses(data))
-      .finally(() => setLoading(false))
-  }, [])
-
-  if (loading) {
-    return (
-      <div className="space-y-3 mt-6">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="h-24 rounded-xl bg-gray-100 animate-pulse" />
-        ))}
-      </div>
-    )
-  }
-
+export function FuturesAnalysis({ analyses }: { analyses: Analysis[] }) {
   if (analyses.length === 0) {
     return (
-      <div className="text-center py-12 text-gray-400 text-sm mt-6">
+      <div className="text-center py-12 text-slate-500 text-sm mt-6">
         暂无期货分析数据，请在 <a href="/admin" className="text-blue-500 underline">Admin</a> 页面刷新期货分析
       </div>
     )
