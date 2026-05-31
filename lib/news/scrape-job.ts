@@ -1,6 +1,5 @@
 import { prisma } from '@/lib/db'
 import { getScraperForSource } from '@/lib/scraper'
-import { processPendingArticles } from '@/lib/ai/process-article'
 
 export async function runScrapeJob(source: string): Promise<{ count: number }> {
   // Mark job as running
@@ -26,8 +25,8 @@ export async function runScrapeJob(source: string): Promise<{ count: number }> {
             rawHtml: process.env.STORE_RAW_HTML === 'true' ? article.rawHtml : null,
             source: article.source,
             publishedAt: article.publishedAt,
-            // zlqh already has AI summary — skip re-analysis
-            aiProcessed: article.source === 'zlqh',
+            // Skip AI article analysis for all sources — only futures fundamental/technical analysis is used
+            aiProcessed: true,
           },
           update: {},
         })
@@ -36,11 +35,6 @@ export async function runScrapeJob(source: string): Promise<{ count: number }> {
         // Skip duplicates
       }
     }
-
-    // Run AI processing on new articles (fire-and-forget, don't block response)
-    processPendingArticles(20).catch((err) =>
-      console.error('[scrape-job] AI processing error:', err)
-    )
 
     await prisma.scrapeJob.update({
       where: { source },
