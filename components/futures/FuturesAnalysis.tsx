@@ -1,6 +1,7 @@
 'use client'
 
-import { SectorSection } from '@/components/futures/SectorSection'
+import { useState } from 'react'
+import { VarietyAnalysisCard } from './VarietyAnalysisCard'
 
 interface Analysis {
   id: number
@@ -20,14 +21,6 @@ interface Analysis {
 const SECTOR_ORDER = ['黑色金属', '有色金属', '化工', '农产品', '贵金属', '能源', '金融', '其他']
 
 export function FuturesAnalysis({ analyses }: { analyses: Analysis[] }) {
-  if (analyses.length === 0) {
-    return (
-      <div className="text-center py-12 text-slate-500 text-sm mt-6">
-        暂无期货分析数据，请在 <a href="/admin" className="text-blue-500 underline">Admin</a> 页面刷新期货分析
-      </div>
-    )
-  }
-
   const bySector: Record<string, Analysis[]> = {}
   for (const a of analyses) {
     const sector = a.sector || '其他'
@@ -36,20 +29,40 @@ export function FuturesAnalysis({ analyses }: { analyses: Analysis[] }) {
   }
   const sectors = SECTOR_ORDER.filter((s) => bySector[s]?.length > 0)
 
-  return (
-    <div className="mt-8 space-y-8">
-      <div className="flex items-center gap-2">
-        <span className="inline-block w-1.5 h-4 rounded-full bg-yellow-500" />
-        <h2 className="text-base font-semibold text-slate-300">期货品种 AI 分析</h2>
-        <span className="text-xs text-slate-500">· 矛盾 · 机会 · 多空依据</span>
+  const [activeSector, setActiveSector] = useState(sectors[0] ?? '')
+
+  if (analyses.length === 0) {
+    return (
+      <div className="text-center py-12 text-slate-500 text-sm">
+        暂无期货分析数据，请在 <a href="/admin" className="text-blue-500 underline">Admin</a> 页面刷新期货分析
       </div>
-      <div className="space-y-8">
+    )
+  }
+
+  return (
+    <div>
+      {/* Sector tabs */}
+      <div className="flex gap-1 overflow-x-auto border-b border-slate-700 mb-6">
         {sectors.map((sector) => (
-          <SectorSection
+          <button
             key={sector}
-            sector={sector}
-            analyses={bySector[sector]}
-          />
+            onClick={() => setActiveSector(sector)}
+            className={`shrink-0 px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors whitespace-nowrap ${
+              activeSector === sector
+                ? 'border-blue-500 text-blue-400'
+                : 'border-transparent text-slate-500 hover:text-slate-300'
+            }`}
+          >
+            {sector}
+            <span className="ml-1.5 text-xs opacity-60">{bySector[sector].length}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* Active sector cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        {(bySector[activeSector] ?? []).map((a) => (
+          <VarietyAnalysisCard key={a.id} analysis={a} />
         ))}
       </div>
     </div>
