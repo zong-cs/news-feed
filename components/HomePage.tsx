@@ -39,7 +39,7 @@ export function HomePage({ initialAnalyses }: { initialAnalyses: Analysis[] }) {
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-white">Trading Desk</h1>
-            <p className="text-sm text-slate-400 mt-1">实时市场资讯 · 每60秒自动刷新</p>
+            <p className="text-sm text-slate-400 mt-1">实时市场资讯 · 期货 AI 分析</p>
           </div>
           <a
             href="/admin"
