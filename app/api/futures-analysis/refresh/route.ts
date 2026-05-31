@@ -1,14 +1,13 @@
 import { NextResponse } from 'next/server'
 import { refreshFuturesAnalysis } from '@/lib/futures/refresh'
 
-export const maxDuration = 300
-
 export async function POST() {
-  try {
-    const result = await refreshFuturesAnalysis()
-    return NextResponse.json(result)
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err)
-    return NextResponse.json({ error: message }, { status: 500 })
-  }
+  // Fire-and-forget: return immediately, run in background
+  refreshFuturesAnalysis()
+    .then(({ updated, varieties }) =>
+      console.log(`[api/refresh] done — updated ${updated}: ${varieties.join(', ')}`)
+    )
+    .catch((err) => console.error('[api/refresh] error:', err))
+
+  return NextResponse.json({ status: 'started' })
 }

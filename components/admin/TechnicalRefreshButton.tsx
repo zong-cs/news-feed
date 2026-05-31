@@ -14,7 +14,7 @@ export function TechnicalRefreshButton() {
       const data = await res.json()
       if (res.ok) {
         setStatus('done')
-        setResult(`已更新 ${data.updated} 个品种`)
+        setResult('已在后台启动分析，约需 3-5 分钟完成')
       } else {
         setStatus('error')
         setResult(data.error ?? '未知错误')
