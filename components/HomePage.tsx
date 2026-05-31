@@ -1,6 +1,5 @@
 'use client'
 
-import { HotNews } from '@/components/news/HotNews'
 import { FuturesAnalysis } from '@/components/futures/FuturesAnalysis'
 
 interface Analysis {
@@ -36,15 +35,6 @@ export function HomePage({ initialAnalyses }: { initialAnalyses: Analysis[] }) {
             Admin
           </a>
         </div>
-
-        {/* Hot macro news */}
-        <section className="mb-10">
-          <h2 className="text-base font-semibold text-slate-300 mb-3 flex items-center gap-2">
-            <span className="inline-block w-1.5 h-4 rounded-full bg-red-500" />
-            宏观热点
-          </h2>
-          <HotNews />
-        </section>
 
         {/* Futures analysis */}
         <FuturesAnalysis analyses={initialAnalyses} />
