@@ -1,6 +1,7 @@
 'use client'
 
 import { FuturesAnalysis } from '@/components/futures/FuturesAnalysis'
+import { RecommendationSection } from '@/components/futures/RecommendationSection'
 
 interface Analysis {
   id: number
@@ -35,6 +36,9 @@ export function HomePage({ initialAnalyses }: { initialAnalyses: Analysis[] }) {
             Admin
           </a>
         </div>
+
+        {/* Recommendations */}
+        <RecommendationSection analyses={initialAnalyses} />
 
         {/* Futures analysis */}
         <FuturesAnalysis analyses={initialAnalyses} />
