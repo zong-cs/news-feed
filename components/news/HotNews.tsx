@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import { zhCN } from 'date-fns/locale'
-import { SentimentBadge } from '@/components/instruments/SentimentBadge'
 
 interface HotArticle {
   id: number
@@ -79,7 +78,6 @@ export function HotNews() {
             <h3 className="text-sm font-medium text-slate-100 line-clamp-2 flex-1">
               {article.title}
             </h3>
-            {article.sentiment && <SentimentBadge sentiment={article.sentiment} />}
           </div>
           {article.summary && (
             <p className="text-xs text-slate-400 line-clamp-2 mb-3">{article.summary}</p>

@@ -1,8 +1,6 @@
 'use client'
 
-import { useState } from 'react'
 import { HotNews } from '@/components/news/HotNews'
-import { InstrumentGrid } from '@/components/instruments/InstrumentGrid'
 import { FuturesAnalysis } from '@/components/futures/FuturesAnalysis'
 
 interface Analysis {
@@ -20,17 +18,7 @@ interface Analysis {
   technicalUpdatedAt?: string | null
 }
 
-const TABS = [
-  { key: 'commodity', label: '大宗商品' },
-  { key: 'crypto', label: '加密货币' },
-  { key: 'stock', label: '股市' },
-] as const
-
-type TabKey = (typeof TABS)[number]['key']
-
 export function HomePage({ initialAnalyses }: { initialAnalyses: Analysis[] }) {
-  const [activeTab, setActiveTab] = useState<TabKey>('commodity')
-
   return (
     <main className="min-h-screen bg-[#0f1117]">
       <div className="max-w-7xl mx-auto px-4 py-8">
@@ -58,29 +46,8 @@ export function HomePage({ initialAnalyses }: { initialAnalyses: Analysis[] }) {
           <HotNews />
         </section>
 
-        {/* Tabs */}
-        <section>
-          <div className="flex gap-1 border-b border-slate-700 mb-6">
-            {TABS.map((tab) => (
-              <button
-                key={tab.key}
-                onClick={() => setActiveTab(tab.key)}
-                className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 -mb-px ${
-                  activeTab === tab.key
-                    ? 'border-blue-500 text-blue-400'
-                    : 'border-transparent text-slate-500 hover:text-slate-300'
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* InstrumentGrid hidden for commodity (data not useful), shown for crypto/stock */}
-          {activeTab !== 'commodity' && <InstrumentGrid type={activeTab} />}
-
-          {activeTab === 'commodity' && <FuturesAnalysis analyses={initialAnalyses} />}
-        </section>
+        {/* Futures analysis */}
+        <FuturesAnalysis analyses={initialAnalyses} />
 
       </div>
     </main>
