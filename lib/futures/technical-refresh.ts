@@ -36,7 +36,7 @@ export async function refreshTechnicalAnalysis(): Promise<{ updated: number; var
     await prisma.futuresVarietyAnalysis.update({
       where: { variety },
       data: {
-        technicalAnalysis: JSON.stringify(ta),
+        technicalAnalysis: JSON.stringify({ ...ta, symbol: kdata.symbol }),
         technicalUpdatedAt: new Date(),
       },
     })

@@ -18,6 +18,7 @@ interface TrendlineBreakout {
 
 interface TechnicalAnalysis {
   signal: 'strong_buy' | 'buy' | 'neutral' | 'sell' | 'strong_sell'
+  symbol?: string
   entryPoint: number
   stopLoss: number
   target1: number
@@ -37,6 +38,7 @@ interface Analysis {
 interface BreakoutItem {
   variety: string
   sector: string
+  symbol?: string
   breakout: TrendlineBreakout
   signal: TechnicalAnalysis['signal']
   entryPoint: number
@@ -58,6 +60,7 @@ function buildBreakouts(analyses: Analysis[]): BreakoutItem[] {
     items.push({
       variety: a.variety,
       sector: a.sector ?? '其他',
+      symbol: ta.symbol,
       breakout: ta.trendlineBreakout,
       signal: ta.signal,
       entryPoint: ta.entryPoint,
@@ -91,6 +94,7 @@ function BreakoutCard({ item, onClick }: { item: BreakoutItem; onClick: () => vo
       <div className="flex items-start justify-between mb-3 gap-2">
         <div className="flex items-center gap-2 flex-wrap">
           <span className={`text-base font-bold ${accentColor}`}>{item.variety}</span>
+          {item.symbol && <span className="text-xs font-mono text-slate-400">{item.symbol}</span>}
           <span className="text-xs text-slate-500">{item.sector}</span>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
@@ -182,6 +186,7 @@ export function BreakoutSection({ analyses }: { analyses: Analysis[] }) {
       {selected && (
         <BreakoutChartModal
           variety={selected.variety}
+          symbol={selected.symbol}
           breakout={selected.breakout}
           onClose={() => setSelected(null)}
         />

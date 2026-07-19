@@ -36,6 +36,7 @@ interface KBar {
 
 interface Props {
   variety: string
+  symbol?: string
   breakout: TrendlineBreakout
   onClose: () => void
 }
@@ -53,7 +54,7 @@ function buildTrendlineSeries(p1: { date: string; price: number }, p2: { date: s
   ]
 }
 
-export function BreakoutChartModal({ variety, breakout, onClose }: Props) {
+export function BreakoutChartModal({ variety, symbol, breakout, onClose }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi | null>(null)
   const [loading, setLoading] = useState(true)
@@ -183,6 +184,7 @@ export function BreakoutChartModal({ variety, breakout, onClose }: Props) {
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-700">
           <div className="flex items-center gap-3">
             <span className={`text-lg font-bold ${accentColor}`}>{variety}</span>
+            {symbol && <span className="text-sm font-mono text-slate-400">{symbol}</span>}
             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${badgeBg}`}>
               {isBullish ? '向上突破' : '向下突破'}
             </span>

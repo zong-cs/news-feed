@@ -9,6 +9,7 @@ interface ArticleRef {
 }
 
 interface TechnicalAnalysis {
+  symbol?: string
   support1: number
   support2: number
   resistance1: number
@@ -125,7 +126,7 @@ export function VarietyAnalysisCard({ analysis }: { analysis: Analysis }) {
             tab === 'technical' ? 'border-blue-500 text-blue-400' : 'border-transparent text-slate-500 hover:text-slate-300'
           }`}
         >
-          技术面 {!ta && <span className="text-slate-600">（暂无）</span>}
+          技术面 {ta?.symbol && <span className="text-slate-500 font-normal">· {ta.symbol}</span>}{!ta && <span className="text-slate-600">（暂无）</span>}
         </button>
       </div>
 
