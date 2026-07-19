@@ -11,6 +11,13 @@ export interface TrendlineBreakout {
   type: 'horizontal' | 'diagonal'
   direction: 'bullish' | 'bearish'
   description: string
+  // 趋势线两个锚点，用于在图表上绘制
+  line: {
+    p1: { date: string; price: number }  // YYYYMMDD
+    p2: { date: string; price: number }
+  }
+  breakoutDate: string   // YYYYMMDD，突破发生的日期
+  breakoutPrice: number  // 突破时的收盘价
 }
 
 export interface TechnicalAnalysis {
@@ -68,7 +75,13 @@ const SYSTEM_PROMPT = `你是一位专业的期货技术分析师，擅长K线�
     "timeframe": "daily|weekly",
     "type": "horizontal|diagonal",
     "direction": "bullish|bearish",
-    "description": "简短描述突破的具体情况，如突破位置、力度等"
+    "description": "简短描述突破的具体情况，如突破位置、力度等",
+    "line": {
+      "p1": { "date": "YYYYMMDD", "price": 数字 },
+      "p2": { "date": "YYYYMMDD", "price": 数字 }
+    },
+    "breakoutDate": "YYYYMMDD",
+    "breakoutPrice": 数字
   },
   "entryPoint": 数字,
   "entryLogic": "字符串",

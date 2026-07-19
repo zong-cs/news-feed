@@ -1,10 +1,19 @@
 'use client'
 
+import { useState } from 'react'
+import { BreakoutChartModal } from './BreakoutChartModal'
+
 interface TrendlineBreakout {
   timeframe: 'daily' | 'weekly'
   type: 'horizontal' | 'diagonal'
   direction: 'bullish' | 'bearish'
   description: string
+  line: {
+    p1: { date: string; price: number }
+    p2: { date: string; price: number }
+  }
+  breakoutDate: string
+  breakoutPrice: number
 }
 
 interface TechnicalAnalysis {
@@ -44,6 +53,8 @@ function buildBreakouts(analyses: Analysis[]): BreakoutItem[] {
     let ta: TechnicalAnalysis
     try { ta = JSON.parse(a.technicalAnalysis) } catch { continue }
     if (!ta.trendlineBreakout || !ta.entryPoint) continue
+    // Only show breakouts with coordinate data for the chart
+    if (!ta.trendlineBreakout.line || !ta.trendlineBreakout.breakoutDate) continue
     items.push({
       variety: a.variety,
       sector: a.sector ?? '其他',
@@ -56,7 +67,6 @@ function buildBreakouts(analyses: Analysis[]): BreakoutItem[] {
       entryLogic: ta.entryLogic,
     })
   }
-  // bullish first, then bearish; within each group weekly before daily (higher timeframe priority)
   const order = (i: BreakoutItem) => (i.breakout.direction === 'bullish' ? 0 : 10) + (i.breakout.timeframe === 'weekly' ? 0 : 1)
   return items.sort((a, b) => order(a) - order(b))
 }
@@ -64,7 +74,7 @@ function buildBreakouts(analyses: Analysis[]): BreakoutItem[] {
 const TIMEFRAME_LABEL = { daily: '日线', weekly: '周线' }
 const TYPE_LABEL = { horizontal: '水平趋势线', diagonal: '斜趋势线' }
 
-function BreakoutCard({ item }: { item: BreakoutItem }) {
+function BreakoutCard({ item, onClick }: { item: BreakoutItem; onClick: () => void }) {
   const isBullish = item.breakout.direction === 'bullish'
   const isWeekly = item.breakout.timeframe === 'weekly'
   const borderColor = isBullish ? 'border-emerald-700' : 'border-rose-700'
@@ -74,7 +84,10 @@ function BreakoutCard({ item }: { item: BreakoutItem }) {
   const timeframeBg = isWeekly ? 'bg-amber-900/60 text-amber-300' : 'bg-slate-700/60 text-slate-300'
 
   return (
-    <div className={`rounded-xl border ${borderColor} ${bgColor} p-4`}>
+    <div
+      className={`rounded-xl border ${borderColor} ${bgColor} p-4 cursor-pointer hover:brightness-110 transition-all`}
+      onClick={onClick}
+    >
       <div className="flex items-start justify-between mb-3 gap-2">
         <div className="flex items-center gap-2 flex-wrap">
           <span className={`text-base font-bold ${accentColor}`}>{item.variety}</span>
@@ -87,6 +100,7 @@ function BreakoutCard({ item }: { item: BreakoutItem }) {
           <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${badgeBg}`}>
             {isBullish ? '向上突破' : '向下突破'}
           </span>
+          <span className="text-[10px] text-slate-600 ml-1">查看图表 →</span>
         </div>
       </div>
 
@@ -122,6 +136,7 @@ function BreakoutCard({ item }: { item: BreakoutItem }) {
 
 export function BreakoutSection({ analyses }: { analyses: Analysis[] }) {
   const items = buildBreakouts(analyses)
+  const [selected, setSelected] = useState<BreakoutItem | null>(null)
 
   if (items.length === 0) return null
 
@@ -145,7 +160,7 @@ export function BreakoutSection({ analyses }: { analyses: Analysis[] }) {
             </p>
             <div className="space-y-3">
               {bullish.map((item) => (
-                <BreakoutCard key={item.variety} item={item} />
+                <BreakoutCard key={item.variety} item={item} onClick={() => setSelected(item)} />
               ))}
             </div>
           </div>
@@ -157,12 +172,20 @@ export function BreakoutSection({ analyses }: { analyses: Analysis[] }) {
             </p>
             <div className="space-y-3">
               {bearish.map((item) => (
-                <BreakoutCard key={item.variety} item={item} />
+                <BreakoutCard key={item.variety} item={item} onClick={() => setSelected(item)} />
               ))}
             </div>
           </div>
         )}
       </div>
+
+      {selected && (
+        <BreakoutChartModal
+          variety={selected.variety}
+          breakout={selected.breakout}
+          onClose={() => setSelected(null)}
+        />
+      )}
     </section>
   )
 }
