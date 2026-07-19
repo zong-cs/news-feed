@@ -45,20 +45,12 @@ function toTime(date: string): Time {
   return `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}` as Time
 }
 
-// Extend a diagonal line to fill the visible range
-function buildTrendlineSeries(p1: { date: string; price: number }, p2: { date: string; price: number }, bars: KBar[]) {
-  if (bars.length === 0) return []
-  const d1 = parseInt(p1.date)
-  const d2 = parseInt(p2.date)
-  if (d1 === d2) {
-    // horizontal — extend across all bars
-    return bars.map((b) => ({ time: toTime(b.date), value: p1.price }))
-  }
-  const slope = (p2.price - p1.price) / (d2 - d1)
-  return bars.map((b) => {
-    const d = parseInt(b.date)
-    return { time: toTime(b.date), value: p1.price + slope * (d - d1) }
-  })
+// Build trendline: only p1 → p2, no extrapolation
+function buildTrendlineSeries(p1: { date: string; price: number }, p2: { date: string; price: number }) {
+  return [
+    { time: toTime(p1.date), value: p1.price },
+    { time: toTime(p2.date), value: p2.price },
+  ]
 }
 
 export function BreakoutChartModal({ variety, breakout, onClose }: Props) {
@@ -127,12 +119,11 @@ export function BreakoutChartModal({ variety, breakout, onClose }: Props) {
         }))
         candleSeries.setData(candleData)
 
-        // Trendline series
-        const trendlinePoints = buildTrendlineSeries(breakout.line.p1, breakout.line.p2, bars)
+        // Trendline series — only p1 to p2
+        const trendlinePoints = buildTrendlineSeries(breakout.line.p1, breakout.line.p2)
         if (trendlinePoints.length > 0) {
-          const trendColor = breakout.direction === 'bullish' ? '#f59e0b' : '#f59e0b'
           const lineSeries = chart.addSeries(LineSeries, {
-            color: trendColor,
+            color: '#f59e0b',
             lineWidth: 2,
             lineStyle: LineStyle.Dashed,
             priceLineVisible: false,
@@ -151,7 +142,15 @@ export function BreakoutChartModal({ variety, breakout, onClose }: Props) {
           text: '突破',
         }])
 
-        chart.timeScale().fitContent()
+        // Focus view: 60 bars before p1, 10 bars after breakout
+        const p1Idx = bars.findIndex((b) => b.date >= breakout.line.p1.date)
+        const breakoutIdx = bars.findIndex((b) => b.date >= breakout.breakoutDate)
+        const from = Math.max(0, (p1Idx >= 0 ? p1Idx : 0) - 5)
+        const to = Math.min(bars.length - 1, (breakoutIdx >= 0 ? breakoutIdx : bars.length - 1) + 10)
+        chart.timeScale().setVisibleRange({
+          from: toTime(bars[from].date),
+          to: toTime(bars[to].date),
+        })
         setLoading(false)
       } catch (e: any) {
         if (!cancelled) {
