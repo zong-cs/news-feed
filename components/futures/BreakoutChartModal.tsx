@@ -103,7 +103,7 @@ export function BreakoutChartModal({ variety, breakout, onClose }: Props) {
           crosshair: { mode: 1 },
           rightPriceScale: { borderColor: '#334155' },
           timeScale: { borderColor: '#334155', timeVisible: false },
-          width: containerRef.current.clientWidth,
+          autoSize: true,
           height: 420,
         })
         chartRef.current = chart
@@ -215,17 +215,14 @@ export function BreakoutChartModal({ variety, breakout, onClose }: Props) {
 
         {/* Chart area */}
         <div className="px-5 pt-4">
-          {loading && (
-            <div className="h-[420px] flex items-center justify-center text-slate-500 text-sm">
-              加载K线数据中…
-            </div>
-          )}
-          {error && (
-            <div className="h-[420px] flex items-center justify-center text-slate-500 text-sm">
-              {error}
-            </div>
-          )}
-          <div ref={containerRef} className={loading || error ? 'hidden' : ''} />
+          <div className="relative">
+            <div ref={containerRef} style={{ height: 420 }} />
+            {(loading || error) && (
+              <div className="absolute inset-0 flex items-center justify-center text-slate-500 text-sm bg-[#0f1117]">
+                {loading ? '加载K线数据中…' : error}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Breakout description */}
