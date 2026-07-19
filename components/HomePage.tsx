@@ -38,9 +38,6 @@ export function HomePage({ initialAnalyses }: { initialAnalyses: Analysis[] }) {
           </a>
         </div>
 
-        {/* Recommendations */}
-        <RecommendationSection analyses={initialAnalyses} />
-
         {/* Trendline breakouts */}
         <BreakoutSection analyses={initialAnalyses} />
 
