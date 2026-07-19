@@ -68,7 +68,10 @@ export function BreakoutChartModal({ variety, symbol, breakout, onClose }: Props
       setLoading(true)
       setError('')
       try {
-        const res = await fetch(`/api/kline?variety=${encodeURIComponent(variety)}`)
+        const url = symbol
+          ? `/api/kline?variety=${encodeURIComponent(variety)}&symbol=${encodeURIComponent(symbol)}`
+          : `/api/kline?variety=${encodeURIComponent(variety)}`
+        const res = await fetch(url)
         if (!res.ok) throw new Error('获取K线数据失败')
         const data = await res.json()
         if (cancelled) return

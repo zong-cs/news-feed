@@ -156,6 +156,23 @@ export interface VarietyKData {
 // Cache detected contracts for this process lifetime (reset daily via scheduler restart)
 const contractCache: Record<string, string> = {}
 
+/** Fetch K-line data directly by contract symbol (e.g. rb2608), skipping contract detection */
+export async function fetchKDataBySymbol(variety: string, symbol: string): Promise<VarietyKData | null> {
+  contractCache[symbol.replace(/\d+/, '')] = symbol  // warm cache
+  try {
+    const [dailyRaw, weeklyRaw] = await Promise.all([
+      fetchRaw(symbol, PERIOD_DAILY),
+      fetchRaw(symbol, PERIOD_WEEKLY),
+    ])
+    const daily  = dailyRaw  ? parseData(dailyRaw.data)  : []
+    const weekly = weeklyRaw ? parseData(weeklyRaw.data) : []
+    return { variety, symbol, daily, weekly }
+  } catch (err) {
+    console.error(`[ths] fetch failed for ${symbol}:`, err)
+    return null
+  }
+}
+
 export async function fetchVarietyKData(variety: string): Promise<VarietyKData | null> {
   const code = VARIETY_TO_CODE[variety]
   if (!code) return null
