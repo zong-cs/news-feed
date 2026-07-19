@@ -177,9 +177,12 @@ export function BreakoutChartModal({ variety, symbol, breakout, onClose }: Props
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose() }}
+      onMouseDown={(e) => { if (e.target === e.currentTarget) onClose() }}
     >
-      <div className="w-full max-w-3xl bg-[#0f1117] border border-slate-700 rounded-2xl overflow-hidden shadow-2xl">
+      <div
+        className="w-full max-w-3xl bg-[#0f1117] border border-slate-700 rounded-2xl overflow-hidden shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-700">
           <div className="flex items-center gap-3">
@@ -206,7 +209,7 @@ export function BreakoutChartModal({ variety, symbol, breakout, onClose }: Props
               ))}
             </div>
             <button
-              onClick={onClose}
+              onMouseDown={(e) => { e.stopPropagation(); onClose() }}
               className="text-slate-500 hover:text-slate-300 transition-colors text-xl leading-none"
             >
               ×
