@@ -46,12 +46,29 @@ function toTime(date: string): Time {
   return `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}` as Time
 }
 
-// Build trendline: only p1 → p2, no extrapolation
-function buildTrendlineSeries(p1: { date: string; price: number }, p2: { date: string; price: number }) {
-  return [
-    { time: toTime(p1.date), value: p1.price },
-    { time: toTime(p2.date), value: p2.price },
-  ]
+// Build trendline: from p1, extend along slope through p2, to the last visible bar
+function buildTrendlineSeries(
+  p1: { date: string; price: number },
+  p2: { date: string; price: number },
+  bars: KBar[],
+  toIdx: number,
+) {
+  const i1 = bars.findIndex((b) => b.date >= p1.date)
+  const i2 = bars.findIndex((b) => b.date >= p2.date)
+  if (i1 < 0 || i2 < 0 || i1 === i2) {
+    // fallback: just draw p1→p2
+    return [
+      { time: toTime(p1.date), value: p1.price },
+      { time: toTime(p2.date), value: p2.price },
+    ]
+  }
+  const slope = (p2.price - p1.price) / (i2 - i1)
+  const end = Math.min(toIdx, bars.length - 1)
+  const points = []
+  for (let i = i1; i <= end; i++) {
+    points.push({ time: toTime(bars[i].date), value: p1.price + slope * (i - i1) })
+  }
+  return points
 }
 
 export function BreakoutChartModal({ variety, symbol, breakout, onClose }: Props) {
@@ -123,8 +140,14 @@ export function BreakoutChartModal({ variety, symbol, breakout, onClose }: Props
         }))
         candleSeries.setData(candleData)
 
-        // Trendline series — only p1 to p2
-        const trendlinePoints = buildTrendlineSeries(breakout.line.p1, breakout.line.p2)
+        // Compute visible range first (needed for trendline extension)
+        const p1Idx = bars.findIndex((b) => b.date >= breakout.line.p1.date)
+        const breakoutIdx = bars.findIndex((b) => b.date >= breakout.breakoutDate)
+        const from = Math.max(0, (p1Idx >= 0 ? p1Idx : 0) - 5)
+        const to = Math.min(bars.length - 1, (breakoutIdx >= 0 ? breakoutIdx : bars.length - 1) + 10)
+
+        // Trendline: extend from p1 along slope through p2 to end of visible range
+        const trendlinePoints = buildTrendlineSeries(breakout.line.p1, breakout.line.p2, bars, to)
         if (trendlinePoints.length > 0) {
           const lineSeries = chart.addSeries(LineSeries, {
             color: '#f59e0b',
@@ -146,11 +169,7 @@ export function BreakoutChartModal({ variety, symbol, breakout, onClose }: Props
           text: '突破',
         }])
 
-        // Focus view: 60 bars before p1, 10 bars after breakout
-        const p1Idx = bars.findIndex((b) => b.date >= breakout.line.p1.date)
-        const breakoutIdx = bars.findIndex((b) => b.date >= breakout.breakoutDate)
-        const from = Math.max(0, (p1Idx >= 0 ? p1Idx : 0) - 5)
-        const to = Math.min(bars.length - 1, (breakoutIdx >= 0 ? breakoutIdx : bars.length - 1) + 10)
+        // Set visible range
         chart.timeScale().setVisibleRange({
           from: toTime(bars[from].date),
           to: toTime(bars[to].date),
