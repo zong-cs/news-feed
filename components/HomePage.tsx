@@ -2,6 +2,7 @@
 
 import { FuturesAnalysis } from '@/components/futures/FuturesAnalysis'
 import { RecommendationSection } from '@/components/futures/RecommendationSection'
+import { BreakoutSection } from '@/components/futures/BreakoutSection'
 
 interface Analysis {
   id: number
@@ -39,6 +40,9 @@ export function HomePage({ initialAnalyses }: { initialAnalyses: Analysis[] }) {
 
         {/* Recommendations */}
         <RecommendationSection analyses={initialAnalyses} />
+
+        {/* Trendline breakouts */}
+        <BreakoutSection analyses={initialAnalyses} />
 
         {/* Futures analysis */}
         <FuturesAnalysis analyses={initialAnalyses} />
