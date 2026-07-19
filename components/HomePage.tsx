@@ -25,17 +25,9 @@ export function HomePage({ initialAnalyses }: { initialAnalyses: Analysis[] }) {
       <div className="max-w-7xl mx-auto px-4 py-8">
 
         {/* Header */}
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-white">Trading Desk</h1>
-            <p className="text-sm text-slate-400 mt-1">实时市场资讯 · 期货 AI 分析</p>
-          </div>
-          <a
-            href="/admin"
-            className="rounded-md border border-slate-600 px-3 py-1.5 text-sm text-slate-400 hover:bg-slate-800 hover:text-slate-200 transition-colors"
-          >
-            Admin
-          </a>
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-white">Trading Desk</h1>
+          <p className="text-sm text-slate-400 mt-1">实时市场资讯 · 期货 AI 分析</p>
         </div>
 
         {/* Trendline breakouts */}
