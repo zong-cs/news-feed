@@ -1,7 +1,20 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { BreakoutChartModal } from './BreakoutChartModal'
+
+const STORAGE_KEY = 'breakout_hidden_varieties'
+
+function loadHidden(): Set<string> {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    return new Set(raw ? JSON.parse(raw) : [])
+  } catch { return new Set() }
+}
+
+function saveHidden(hidden: Set<string>) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify([...hidden])) } catch {}
+}
 
 interface TrendlineBreakout {
   timeframe: 'daily' | 'weekly'
@@ -140,11 +153,37 @@ function BreakoutCard({ item, onClick }: { item: BreakoutItem; onClick: () => vo
 export function BreakoutSection({ analyses }: { analyses: Analysis[] }) {
   const items = buildBreakouts(analyses)
   const [selected, setSelected] = useState<BreakoutItem | null>(null)
+  const [hidden, setHidden] = useState<Set<string>>(new Set())
+  const [showFilter, setShowFilter] = useState(false)
+  const filterRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => { setHidden(loadHidden()) }, [])
+
+  // Close filter panel on outside click
+  useEffect(() => {
+    if (!showFilter) return
+    function handle(e: MouseEvent) {
+      if (filterRef.current && !filterRef.current.contains(e.target as Node)) {
+        setShowFilter(false)
+      }
+    }
+    document.addEventListener('mousedown', handle)
+    return () => document.removeEventListener('mousedown', handle)
+  }, [showFilter])
 
   if (items.length === 0) return null
 
-  const bullish = items.filter((i) => i.breakout.direction === 'bullish')
-  const bearish = items.filter((i) => i.breakout.direction === 'bearish')
+  function toggleHidden(variety: string) {
+    const next = new Set(hidden)
+    if (next.has(variety)) next.delete(variety)
+    else next.add(variety)
+    setHidden(next)
+    saveHidden(next)
+  }
+
+  const visible = items.filter((i) => !hidden.has(i.variety))
+  const bullish = visible.filter((i) => i.breakout.direction === 'bullish')
+  const bearish = visible.filter((i) => i.breakout.direction === 'bearish')
 
   return (
     <section className="mb-10">
@@ -152,35 +191,81 @@ export function BreakoutSection({ analyses }: { analyses: Analysis[] }) {
         <span className="inline-block w-1.5 h-4 rounded-full bg-amber-500" />
         趋势线突破
         <span className="text-xs text-slate-500 font-normal">· 日线 / 周线有效突破</span>
-        <span className="text-xs text-slate-600 font-normal ml-auto">{items.length} 个品种</span>
+        <div className="ml-auto flex items-center gap-3">
+          {hidden.size > 0 && (
+            <span className="text-xs text-slate-600">已隐藏 {hidden.size} 个</span>
+          )}
+          <div className="relative" ref={filterRef}>
+            <button
+              onClick={() => setShowFilter((v) => !v)}
+              className="text-xs text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 rounded px-2 py-0.5 transition-colors"
+            >
+              筛选品种
+            </button>
+            {showFilter && (
+              <div className="absolute right-0 top-7 z-20 w-56 bg-slate-900 border border-slate-700 rounded-xl shadow-xl p-3">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs text-slate-400">选择显示的品种</span>
+                  <button
+                    onClick={() => { setHidden(new Set()); saveHidden(new Set()) }}
+                    className="text-[10px] text-slate-500 hover:text-slate-300"
+                  >
+                    全部显示
+                  </button>
+                </div>
+                <div className="space-y-1 max-h-64 overflow-y-auto">
+                  {items.map((item) => (
+                    <label key={item.variety} className="flex items-center gap-2 cursor-pointer py-1 px-1 rounded hover:bg-slate-800">
+                      <input
+                        type="checkbox"
+                        checked={!hidden.has(item.variety)}
+                        onChange={() => toggleHidden(item.variety)}
+                        className="accent-amber-500"
+                      />
+                      <span className="text-xs text-slate-300">{item.variety}</span>
+                      {item.symbol && <span className="text-[10px] text-slate-600 font-mono ml-auto">{item.symbol}</span>}
+                      <span className={`text-[10px] ml-1 ${item.breakout.direction === 'bullish' ? 'text-emerald-500' : 'text-rose-500'}`}>
+                        {item.breakout.direction === 'bullish' ? '▲' : '▼'}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </h2>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {bullish.length > 0 && (
-          <div>
-            <p className="text-xs font-medium text-emerald-500 mb-3 flex items-center gap-1">
-              <span>▲</span> 向上突破 ({bullish.length})
-            </p>
-            <div className="space-y-3">
-              {bullish.map((item) => (
-                <BreakoutCard key={item.variety} item={item} onClick={() => setSelected(item)} />
-              ))}
+      {visible.length === 0 ? (
+        <p className="text-sm text-slate-500 text-center py-6">所有品种已隐藏，点击「筛选品种」重新选择</p>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {bullish.length > 0 && (
+            <div>
+              <p className="text-xs font-medium text-emerald-500 mb-3 flex items-center gap-1">
+                <span>▲</span> 向上突破 ({bullish.length})
+              </p>
+              <div className="space-y-3">
+                {bullish.map((item) => (
+                  <BreakoutCard key={item.variety} item={item} onClick={() => setSelected(item)} />
+                ))}
+              </div>
             </div>
-          </div>
-        )}
-        {bearish.length > 0 && (
-          <div>
-            <p className="text-xs font-medium text-rose-500 mb-3 flex items-center gap-1">
-              <span>▼</span> 向下突破 ({bearish.length})
-            </p>
-            <div className="space-y-3">
-              {bearish.map((item) => (
-                <BreakoutCard key={item.variety} item={item} onClick={() => setSelected(item)} />
-              ))}
+          )}
+          {bearish.length > 0 && (
+            <div>
+              <p className="text-xs font-medium text-rose-500 mb-3 flex items-center gap-1">
+                <span>▼</span> 向下突破 ({bearish.length})
+              </p>
+              <div className="space-y-3">
+                {bearish.map((item) => (
+                  <BreakoutCard key={item.variety} item={item} onClick={() => setSelected(item)} />
+                ))}
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
 
       {selected && (
         <BreakoutChartModal
