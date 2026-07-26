@@ -55,8 +55,6 @@ function buildBreakouts(analyses: Analysis[]): BreakoutItem[] {
     let ta: TechnicalAnalysis
     try { ta = JSON.parse(a.technicalAnalysis) } catch { continue }
     if (!ta.trendlineBreakout || !ta.entryPoint) continue
-    // Only show breakouts with coordinate data for the chart
-    if (!ta.trendlineBreakout.line || !ta.trendlineBreakout.breakoutDate) continue
     items.push({
       variety: a.variety,
       sector: a.sector ?? '其他',
@@ -80,6 +78,7 @@ const TYPE_LABEL = { horizontal: '水平趋势线', diagonal: '斜趋势线' }
 function BreakoutCard({ item, onClick }: { item: BreakoutItem; onClick: () => void }) {
   const isBullish = item.breakout.direction === 'bullish'
   const isWeekly = item.breakout.timeframe === 'weekly'
+  const hasChart = !!(item.breakout.line && item.breakout.breakoutDate)
   const borderColor = isBullish ? 'border-emerald-700' : 'border-rose-700'
   const bgColor = isBullish ? 'bg-emerald-950/40' : 'bg-rose-950/40'
   const accentColor = isBullish ? 'text-emerald-400' : 'text-rose-400'
@@ -88,8 +87,8 @@ function BreakoutCard({ item, onClick }: { item: BreakoutItem; onClick: () => vo
 
   return (
     <div
-      className={`rounded-xl border ${borderColor} ${bgColor} p-4 cursor-pointer hover:brightness-110 transition-all`}
-      onClick={onClick}
+      className={`rounded-xl border ${borderColor} ${bgColor} p-4 ${hasChart ? 'cursor-pointer hover:brightness-110' : ''} transition-all`}
+      onClick={hasChart ? onClick : undefined}
     >
       <div className="flex items-start justify-between mb-3 gap-2">
         <div className="flex items-center gap-2 flex-wrap">
@@ -104,7 +103,7 @@ function BreakoutCard({ item, onClick }: { item: BreakoutItem; onClick: () => vo
           <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${badgeBg}`}>
             {isBullish ? '向上突破' : '向下突破'}
           </span>
-          <span className="text-[10px] text-slate-600 ml-1">查看图表 →</span>
+          {hasChart && <span className="text-[10px] text-slate-600 ml-1">查看图表 →</span>}
         </div>
       </div>
 
