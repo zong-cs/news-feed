@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/db'
-import { analyzeArticle } from './claude'
+import { analyzeArticle } from './article-analysis'
 
 export async function processPendingArticles(batchSize = 10): Promise<number> {
   const articles = await prisma.newsArticle.findMany({

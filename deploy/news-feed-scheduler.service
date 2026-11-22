@@ -1,0 +1,22 @@
+[Unit]
+Description=News Feed scraper and AI scheduler
+After=network-online.target news-feed-web.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/home/ubuntu/apps/news-feed
+Environment=NODE_ENV=production
+Environment=TZ=Asia/Shanghai
+ExecStart=/usr/bin/npm run scheduler
+Restart=always
+RestartSec=10
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ReadWritePaths=/home/ubuntu/apps/news-feed /home/ubuntu/.cache/ms-playwright
+
+[Install]
+WantedBy=multi-user.target

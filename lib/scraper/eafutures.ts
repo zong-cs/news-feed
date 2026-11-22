@@ -75,7 +75,16 @@ export class EAFuturesScraper extends BaseScraper {
       })
 
       try {
-        await page.goto(previewUrl, { waitUntil: 'domcontentloaded', timeout: 20000 })
+        try {
+          await page.goto(previewUrl, { waitUntil: 'domcontentloaded', timeout: 20000 })
+        } catch (err) {
+          // Chromium rejects page.goto when the response itself starts a file
+          // download. The download event above is still emitted, so keep the
+          // page alive long enough for that handler to parse the PDF.
+          if (!(err instanceof Error) || !err.message.includes('Download is starting')) {
+            throw err
+          }
+        }
         // Wait a bit for download to trigger
         await new Promise((r) => setTimeout(r, 5000))
         if (!resolved) {

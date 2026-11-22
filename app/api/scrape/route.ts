@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { runScrapeJob } from '@/lib/news/scrape-job'
 import { ALL_SOURCES } from '@/lib/scraper/sources'
+import { isAdminRequest } from '@/lib/auth/admin'
 
 export async function POST(req: NextRequest) {
+  if (!isAdminRequest(req)) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   const { source } = await req.json()
 
   if (!source || !ALL_SOURCES.includes(source)) {

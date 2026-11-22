@@ -1,10 +1,5 @@
-import Anthropic from '@anthropic-ai/sdk'
 import { KBar } from '@/lib/market/ths'
-
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-  baseURL: process.env.ANTHROPIC_BASE_URL,
-})
+import { generateStructuredResponse, getLLMErrorStatus } from './llm-client'
 
 export interface TrendlineBreakout {
   timeframe: 'daily' | 'weekly'
@@ -45,6 +40,68 @@ export interface TechnicalAnalysis {
   summary: string
 }
 
+const TRENDLINE_BREAKOUT_SCHEMA: Record<string, unknown> = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    timeframe: { type: 'string', enum: ['daily', 'weekly'] },
+    type: { type: 'string', enum: ['horizontal', 'diagonal'] },
+    direction: { type: 'string', enum: ['bullish', 'bearish'] },
+    description: { type: 'string' },
+    line: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        p1: {
+          type: 'object',
+          additionalProperties: false,
+          properties: { date: { type: 'string' }, price: { type: 'number' } },
+          required: ['date', 'price'],
+        },
+        p2: {
+          type: 'object',
+          additionalProperties: false,
+          properties: { date: { type: 'string' }, price: { type: 'number' } },
+          required: ['date', 'price'],
+        },
+      },
+      required: ['p1', 'p2'],
+    },
+    breakoutDate: { type: 'string' },
+    breakoutPrice: { type: 'number' },
+  },
+  required: ['timeframe', 'type', 'direction', 'description', 'line', 'breakoutDate', 'breakoutPrice'],
+}
+
+const TECHNICAL_ANALYSIS_SCHEMA: Record<string, unknown> = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    support1: { type: 'number' },
+    support2: { type: 'number' },
+    resistance1: { type: 'number' },
+    resistance2: { type: 'number' },
+    dailyTrend: { type: 'string', enum: ['up', 'down', 'sideways'] },
+    weeklyTrend: { type: 'string', enum: ['up', 'down', 'sideways'] },
+    cyclePosition: { type: 'string' },
+    trendlineBreakout: { anyOf: [TRENDLINE_BREAKOUT_SCHEMA, { type: 'null' }] },
+    entryPoint: { type: 'number' },
+    entryLogic: { type: 'string' },
+    stopLoss: { type: 'number' },
+    target1: { type: 'number' },
+    target2: { type: 'number' },
+    riskRewardRatio: { type: 'string' },
+    signal: { type: 'string', enum: ['strong_buy', 'buy', 'neutral', 'sell', 'strong_sell'] },
+    summary: { type: 'string' },
+  },
+  required: [
+    'support1', 'support2', 'resistance1', 'resistance2',
+    'dailyTrend', 'weeklyTrend', 'cyclePosition', 'trendlineBreakout',
+    'entryPoint', 'entryLogic', 'stopLoss', 'target1', 'target2',
+    'riskRewardRatio', 'signal', 'summary',
+  ],
+}
+
 const SYSTEM_PROMPT = `你是一位专业的期货技术分析师，擅长K线分析、趋势判断、支撑阻力位识别、趋势线突破识别。
 
 根据提供的日线和周线K线数据，进行技术分析。
@@ -61,38 +118,8 @@ const SYSTEM_PROMPT = `你是一位专业的期货技术分析师，擅长K线�
    - 若有突破，必须填写 line.p1、line.p2（趋势线两个锚点的日期和价格，从K线数据中取实际日期），breakoutDate（突破发生日期），breakoutPrice（突破收盘价），这些字段不能省略
 5. 入场点：给出具体的建议入场价格（顺势方向）
 6. 止损止盈：基于支撑阻力位给出止损和两个目标位
-7. 盈亏比：计算入场点到止损和目标位1的盈亏比
-
-输出严格按以下JSON格式（数字类型不要加引号）：
-{
-  "support1": 数字,
-  "support2": 数字,
-  "resistance1": 数字,
-  "resistance2": 数字,
-  "dailyTrend": "up|down|sideways",
-  "weeklyTrend": "up|down|sideways",
-  "cyclePosition": "字符串",
-  "trendlineBreakout": null 或 {
-    "timeframe": "daily|weekly",
-    "type": "horizontal|diagonal",
-    "direction": "bullish|bearish",
-    "description": "简短描述突破的具体情况，如突破位置、力度等",
-    "line": {
-      "p1": { "date": "YYYYMMDD", "price": 数字 },
-      "p2": { "date": "YYYYMMDD", "price": 数字 }
-    },
-    "breakoutDate": "YYYYMMDD",
-    "breakoutPrice": 数字
-  },
-  "entryPoint": 数字,
-  "entryLogic": "字符串",
-  "stopLoss": 数字,
-  "target1": 数字,
-  "target2": 数字,
-  "riskRewardRatio": "1:X.X",
-  "signal": "strong_buy|buy|neutral|sell|strong_sell",
-  "summary": "字符串"
-}`
+7. 盈亏比：计算入场点到止损和目标位1的盈亏比。
+8. 所有价格必须参考输入K线的实际价格区间，日期必须来自输入数据。`
 
 function formatBars(bars: KBar[], label: string): string {
   const recent = bars.slice(-60)
@@ -116,22 +143,15 @@ export async function analyzeTechnical(
 
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
-      const response = await client.messages.create({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1024,
-        system: SYSTEM_PROMPT,
-        messages: [
-          { role: 'user', content: prompt },
-        ],
+      return await generateStructuredResponse<TechnicalAnalysis>({
+        schemaName: 'futures_technical_analysis',
+        schema: TECHNICAL_ANALYSIS_SCHEMA,
+        instructions: SYSTEM_PROMPT,
+        input: prompt,
+        maxOutputTokens: 4096,
       })
-
-      const raw = (response.content.find((b) => b.type === 'text') as any)?.text ?? ''
-      const match = raw.match(/\{[\s\S]*\}/)
-      const text = match ? match[0] : raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim()
-      const parsed = JSON.parse(text) as TechnicalAnalysis
-      return parsed
-    } catch (err: any) {
-      const status = err?.status ?? err?.response?.status
+    } catch (err) {
+      const status = getLLMErrorStatus(err)
       if (status === 429 && attempt < 2) {
         const wait = (attempt + 1) * 10000
         console.warn(`[technical] 429 for ${variety}, retrying in ${wait}ms`)
